@@ -1,0 +1,10 @@
+server:
+  addr: localhost
+  port: 8081
+
+database:
+  db_name: mydb1
+  user: myuser
+  pass: 1234
+  host: localhost
+  port: 50051
