@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/katoozi/gin-web-site/configs"
+	"github.com/katoozi/gin-web-site/internal/app/website"
 	"github.com/spf13/viper"
 )
 
@@ -18,6 +19,8 @@ func init() {
 	if err != nil {
 		log.Fatalf("Error while reading config.yaml file: %v", err)
 	}
+
+	gin.SetMode(gin.DebugMode)
 }
 
 func main() {
@@ -27,8 +30,14 @@ func main() {
 
 	fmt.Println("database config: ", databaseConfig)
 
-	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
+
+	r.Static("/static", "./web/assets")
+	// r.StaticFS("/more_static", http.Dir("my_file_system"))
+	// r.StaticFile("/favicon.ico", "./resources/favicon.ico")
+
+	website.RegisterRoutes(r)
+
 	r.Run(serverConfig.GetAddr())
 	fmt.Println("Start Listning...")
 }
