@@ -8,4 +8,5 @@ import (
 func RegisterRoutes(engine *gin.Engine) {
 	engine.GET("/", homeHandler)
 	engine.GET("/insert-data", insertDataHandler)
+	engine.POST("/login", checkLogin)
 }

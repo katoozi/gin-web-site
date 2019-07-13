@@ -23,17 +23,52 @@ func homeHandler(c *gin.Context) {
 }
 
 func insertDataHandler(c *gin.Context) {
+	usersData := []*User{
+		NewUser("mohammad", "katoozi", "katoozi", "k2527806@gmail.com", "12345", "2019-07-13"),
+		NewUser("mohammad", "katoozi", "katoozi1", "k2527806@gmail1.com", "123467", "2019-07-14"),
+		NewUser("mohammad", "katoozi", "katoozi2", "k2527806@gmail2.com", "12346789", "2019-07-15"),
+	}
 	tx := dbCon.MustBegin()
-	tx.MustExec(`INSERT INTO "user" (first_name, last_name, email, username, password, last_login) VALUES ($1, $2, $3, $4, $5, $6)`, "mohammad", "katoozi", "k2527806@gmail.com", "katoozi", "1234", "2019-07-13")
-	tx.MustExec(`INSERT INTO "user" (first_name, last_name, email, username, password, last_login) VALUES ($1, $2, $3, $4, $5, $6)`, "mohammad", "katoozi", "k2527806@gmail1.com", "katoozi1", "1234", "2019-07-13")
-	tx.MustExec(`INSERT INTO "user" (first_name, last_name, email, username, password, last_login) VALUES ($1, $2, $3, $4, $5, $6)`, "mohammad", "katoozi", "k2527806@gmail2.com", "katoozi2", "1234", "2019-07-13")
-	// tx.MustExec("INSERT INTO place (country, city, telcode) VALUES ($1, $2, $3)", "United States", "New York", "1")
-	// tx.MustExec("INSERT INTO place (country, telcode) VALUES ($1, $2)", "Hong Kong", "852")
-	// tx.MustExec("INSERT INTO place (country, telcode) VALUES ($1, $2)", "Singapore", "65")
-	// Named queries can use structs, so if you have an existing struct (i.e. person := &Person{}) that you have populated, you can pass it in as &person
-	// tx.NamedExec("INSERT INTO person (first_name, last_name, email) VALUES (:first_name, :last_name, :email)", &Person{"Jane", "Citizen", "jane.citzen@example.com"})
+	for _, user := range usersData {
+		tx.Exec(user.GenerateInsertQuery())
+	}
 	tx.Commit()
 	c.JSON(http.StatusOK, gin.H{
 		"inserted": "true",
+	})
+}
+
+// Login is post data schema
+type Login struct {
+	Username string `form:"username" json:"username" xml:"username"  binding:"required"`
+	Password string `form:"password" json:"password" xml:"password" binding:"required"`
+}
+
+func checkLogin(c *gin.Context) {
+	// fmt.Println(c.Request.FormValue("username"))
+	var loginData Login
+	if err := c.ShouldBind(&loginData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	user := GetUser(loginData.Username)
+	if user == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "unauthorized",
+		})
+		return
+	}
+	err := user.Compare(loginData.Password)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "unauthorized",
+		})
+		return
+	}
+	c.SetCookie("user", user.Password, 3600, "/", "localhost", false, true)
+	c.JSON(http.StatusOK, gin.H{
+		"token": user.Password,
 	})
 }
