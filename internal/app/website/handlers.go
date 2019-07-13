@@ -1,11 +1,13 @@
 package website
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/katoozi/gin-web-site/pkg/sqltools"
 )
 
 func homeHandler(c *gin.Context) {
@@ -14,6 +16,7 @@ func homeHandler(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Error while unmarshal to struct users data: %v", err)
 	}
+	fmt.Println(sqltools.GenerateInsertQuery("user", usersData[0]))
 	c.HTML(http.StatusOK, "home.html", gin.H{
 		"title":  "My First Gin Website",
 		"time":   time.Now(),

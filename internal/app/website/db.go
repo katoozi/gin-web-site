@@ -12,13 +12,13 @@ var dbCon *sqlx.DB
 
 // User will have the user table schema
 type User struct {
-	ID        int    `db:"id"`
-	FirstName string `db:"first_name"`
-	LastName  string `db:"last_name"`
-	Password  string `db:"password"`
-	LastLogin string `db:"last_login"`
-	Username  string `db:"username"`
-	Email     string `db:"email"`
+	ID        int    `db:"id" sqltools:"id"`
+	FirstName string `db:"first_name" sqltools:"first_name"`
+	LastName  string `db:"last_name" sqltools:"last_name"`
+	Password  string `db:"password" sqltools:"password"`
+	LastLogin string `db:"last_login" sqltools:"last_login"`
+	Username  string `db:"username" sqltools:"username"`
+	Email     string `db:"email" sqltools:"email"`
 }
 
 // NewUser is the User type factory function
