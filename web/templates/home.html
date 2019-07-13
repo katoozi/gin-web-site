@@ -9,7 +9,8 @@
 </head>
 <body>
     {{template "about_us.html"}}<br>
-    {{ .time | formatAsDate }}
+    {{ .time | formatAsDate }}<br>
+    {{ .number | intComma }}
     <script src="/static/js/main.js"></script>
 </body>
 </html>

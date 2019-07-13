@@ -36,6 +36,13 @@ func main() {
 	// r.StaticFS("/more_static", http.Dir("my_file_system"))
 	// r.StaticFile("/favicon.ico", "./resources/favicon.ico")
 
+	website.RegisterTemplateFuncs(r)
+
+	// load html files
+	// r.LoadHTMLGlob("./web/templates/components/*")
+	r.LoadHTMLGlob("./web/templates/*.html")
+	//r.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
+
 	website.RegisterRoutes(r)
 
 	r.Run(serverConfig.GetAddr())
