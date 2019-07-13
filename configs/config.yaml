@@ -3,8 +3,8 @@ server:
   port: 8081
 
 database:
-  db_name: mydb1
-  user: myuser
+  db_name: mydb
+  user: user_go
   pass: 1234
   host: localhost
-  port: 50051
+  port: 5432

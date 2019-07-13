@@ -10,7 +10,20 @@
 <body>
     {{template "about_us.html"}}<br>
     {{ .time | formatAsDate }}<br>
-    {{ .number | intComma }}
+    {{ .number | intComma }}<br>
+    {{ with .users }}
+        {{ range . }}
+            {{ .ID }},
+            {{ .FirstName }},
+            {{ .LastName }},
+            {{ .Username }},
+            {{ .Email }},
+            {{ .Password }},
+            {{ .LastLogin }}
+            <br>
+            <hr>
+        {{ end }}
+    {{ end }}
     <script src="/static/js/main.js"></script>
 </body>
 </html>

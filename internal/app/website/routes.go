@@ -7,4 +7,5 @@ import (
 // RegisterRoutes will register all the website routes
 func RegisterRoutes(engine *gin.Engine) {
 	engine.GET("/", homeHandler)
+	engine.GET("/insert-data", insertDataHandler)
 }

@@ -8,6 +8,9 @@ import (
 	"github.com/katoozi/gin-web-site/configs"
 	"github.com/katoozi/gin-web-site/internal/app/website"
 	"github.com/spf13/viper"
+	"github.com/jmoiron/sqlx"
+
+	_ "github.com/lib/pq"
 )
 
 func init() {
@@ -24,14 +27,22 @@ func init() {
 }
 
 func main() {
-	// fetch server and database configs from config.yaml file
-	serverConfig := fetchServerConfig()
-	databaseConfig := fetchDatabaseConfig()
 
-	fmt.Println("database config: ", databaseConfig)
+	// database configurations
+	databaseConfig := fetchDatabaseConfig()
+	dbConnectionStr := fmt.Sprintf(
+		"user=%s dbname=%s password=%s sslmode=disable",
+		databaseConfig.User,
+		databaseConfig.DatabaseName,
+		databaseConfig.Password,
+	)
+	db, err := sqlx.Connect("postgres", dbConnectionStr)
+	if err != nil {
+		log.Fatalf("Connect to db Failed: %v", err)
+	}
+	website.MigrateTables(db)
 
 	r := gin.Default()
-
 	r.Static("/static", "./web/assets")
 	// r.StaticFS("/more_static", http.Dir("my_file_system"))
 	// r.StaticFile("/favicon.ico", "./resources/favicon.ico")
@@ -45,6 +56,8 @@ func main() {
 
 	website.RegisterRoutes(r)
 
+	// fetch server configs from config.yaml file
+	serverConfig := fetchServerConfig()
 	r.Run(serverConfig.GetAddr())
 	fmt.Println("Start Listning...")
 }
