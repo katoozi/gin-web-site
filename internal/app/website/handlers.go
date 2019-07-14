@@ -16,7 +16,7 @@ var DbCon *sqlx.DB
 
 func homeHandler(c *gin.Context) {
 	usersData := []models.User{}
-	err := DbCon.Select(&usersData, `SELECT "id","email","username","password","last_login","first_name","last_name" FROM "user" ORDER BY "id" ASC;`)
+	err := DbCon.Select(&usersData, `SELECT "id","email","username","password","last_login","first_name","last_name","is_active" FROM "user" ORDER BY "id" ASC;`)
 	if err != nil {
 		log.Fatalf("Error while unmarshal to struct users data: %v", err)
 	}
@@ -32,13 +32,13 @@ func homeHandler(c *gin.Context) {
 func insertDataHandler(c *gin.Context) {
 	usersData := []*models.User{
 		models.NewUser("mohammad", "katoozi", "katoozi", "k2527806@gmail.com", "12345", time.Date(2019, 07, 11, 11, 30, 30, 0, time.UTC)),
-		models.NewUser("mohammad", "katoozi", "katoozi1", "k2527806@gmail1.com", "123467", time.Date(2019, 07, 12, 12, 30, 30, 0, time.UTC)),
-		models.NewUser("mohammad", "katoozi", "katoozi2", "k2527806@gmail2.com", "12346789", time.Date(2019, 07, 13, 13, 30, 30, 0, time.UTC)),
+		models.NewUserIsActive("mohammad", "katoozi", "katoozi1", "k2527806@gmail1.com", "123467", time.Date(2019, 07, 12, 12, 30, 30, 0, time.UTC), false),
+		models.NewUserIsActive("mohammad", "katoozi", "katoozi2", "k2527806@gmail2.com", "12346789", time.Date(2019, 07, 13, 13, 30, 30, 0, time.UTC), false),
 	}
 	tx := DbCon.MustBegin()
 	for _, user := range usersData {
-		_, err := tx.Exec(user.GenerateInsertQuery())
-		fmt.Println(err)
+		fmt.Println(user.GenerateInsertQuery())
+		tx.Exec(user.GenerateInsertQuery())
 	}
 	tx.Commit()
 	c.JSON(http.StatusOK, gin.H{
