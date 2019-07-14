@@ -1,4 +1,4 @@
-package templatetags
+package templatefuncs
 
 import (
 	"fmt"
