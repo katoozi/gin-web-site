@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"syscall"
 
 	"github.com/fatih/color"
 	"github.com/katoozi/gin-web-site/internal/pkg/models"
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 // CreateSuperUserCommand will create user with superuser permission in user table
@@ -42,13 +44,17 @@ func createSuperuser() {
 
 	for {
 		fmt.Print("Password: ")
-		pass, _ = reader.ReadString('\n')
-		fmt.Print("Confirm Password: ")
-		passConfirm, _ = reader.ReadString('\n')
+		bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
+		pass = string(bytePassword)
+
+		fmt.Print("\nConfirm Password: ")
+		bytePassword, _ = terminal.ReadPassword(int(syscall.Stdin))
+		passConfirm = string(bytePassword)
+
 		if pass == passConfirm {
 			break
 		} else {
-			color.Red("Passwords Does not Match!!!")
+			color.Red("\nPasswords Does not Match!!!\n")
 		}
 	}
 
@@ -58,10 +64,10 @@ func createSuperuser() {
 
 	_, err := dbCon.Exec(user.GenerateInsertQuery())
 	if err != nil {
-		color.Red("Error while create super user: %v", err)
+		color.Red("\nError while create super user: %v\n", err)
 	}
 
-	color.Green("Superuser Seccessfully Created.")
+	color.Green("\nSuperuser Seccessfully Created.")
 
 }
 
