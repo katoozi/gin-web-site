@@ -23,7 +23,6 @@ func homeHandler(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Error while unmarshal to struct users data: %v", err)
 	}
-	// fmt.Println(sqltools.GenerateInsertQuery("user", usersData[0]))
 	c.HTML(http.StatusOK, "home.html", gin.H{
 		"title":  "My First Gin Website",
 		"time":   time.Now(),
@@ -48,14 +47,7 @@ func insertDataHandler(c *gin.Context) {
 	})
 }
 
-// Login is post data schema
-type Login struct {
-	Username string `form:"username" json:"username" xml:"username"  binding:"required"`
-	Password string `form:"password" json:"password" xml:"password" binding:"required"`
-}
-
 func checkLogin(c *gin.Context) {
-	// fmt.Println(c.Request.FormValue("username"))
 	var loginData Login
 	if err := c.ShouldBind(&loginData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
