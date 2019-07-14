@@ -5,10 +5,11 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/configs"
 	"github.com/katoozi/gin-web-site/internal/app/website"
+	"github.com/katoozi/gin-web-site/internal/pkg/models"
 	"github.com/spf13/viper"
-	"github.com/jmoiron/sqlx"
 
 	_ "github.com/lib/pq"
 )
@@ -27,7 +28,6 @@ func init() {
 }
 
 func main() {
-
 	// database configurations
 	databaseConfig := fetchDatabaseConfig()
 	dbConnectionStr := fmt.Sprintf(
@@ -40,7 +40,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Connect to db Failed: %v", err)
 	}
-	website.MigrateTables(db)
+	models.MigrateTables(db)
+
+	website.DbCon = db
 
 	r := gin.Default()
 	r.Static("/static", "./web/assets")

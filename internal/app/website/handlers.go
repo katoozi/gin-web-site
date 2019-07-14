@@ -1,22 +1,25 @@
 package website
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/katoozi/gin-web-site/pkg/sqltools"
+	"github.com/jmoiron/sqlx"
+	"github.com/katoozi/gin-web-site/internal/pkg/models"
 )
 
+// DbCon is the sqlx db connection
+var DbCon *sqlx.DB
+
 func homeHandler(c *gin.Context) {
-	usersData := []User{}
-	err := dbCon.Select(&usersData, `SELECT "id","email","username","password","last_login","first_name","last_name" FROM "user" ORDER BY "id" ASC;`)
+	usersData := []models.User{}
+	err := DbCon.Select(&usersData, `SELECT "id","email","username","password","last_login","first_name","last_name" FROM "user" ORDER BY "id" ASC;`)
 	if err != nil {
 		log.Fatalf("Error while unmarshal to struct users data: %v", err)
 	}
-	fmt.Println(sqltools.GenerateInsertQuery("user", usersData[0]))
+	// fmt.Println(sqltools.GenerateInsertQuery("user", usersData[0]))
 	c.HTML(http.StatusOK, "home.html", gin.H{
 		"title":  "My First Gin Website",
 		"time":   time.Now(),
@@ -26,12 +29,12 @@ func homeHandler(c *gin.Context) {
 }
 
 func insertDataHandler(c *gin.Context) {
-	usersData := []*User{
-		NewUser("mohammad", "katoozi", "katoozi", "k2527806@gmail.com", "12345", "2019-07-13"),
-		NewUser("mohammad", "katoozi", "katoozi1", "k2527806@gmail1.com", "123467", "2019-07-14"),
-		NewUser("mohammad", "katoozi", "katoozi2", "k2527806@gmail2.com", "12346789", "2019-07-15"),
+	usersData := []*models.User{
+		models.NewUser("mohammad", "katoozi", "katoozi", "k2527806@gmail.com", "12345", "2019-07-13"),
+		models.NewUser("mohammad", "katoozi", "katoozi1", "k2527806@gmail1.com", "123467", "2019-07-14"),
+		models.NewUser("mohammad", "katoozi", "katoozi2", "k2527806@gmail2.com", "12346789", "2019-07-15"),
 	}
-	tx := dbCon.MustBegin()
+	tx := DbCon.MustBegin()
 	for _, user := range usersData {
 		tx.Exec(user.GenerateInsertQuery())
 	}
@@ -56,7 +59,7 @@ func checkLogin(c *gin.Context) {
 		})
 		return
 	}
-	user := GetUser(loginData.Username)
+	user := models.GetUser(loginData.Username, DbCon)
 	if user == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "unauthorized",

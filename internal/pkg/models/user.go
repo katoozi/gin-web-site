@@ -1,4 +1,4 @@
-package website
+package models
 
 import (
 	"fmt"
@@ -7,8 +7,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
-
-var dbCon *sqlx.DB
 
 // User will have the user table schema
 type User struct {
@@ -69,7 +67,7 @@ func (u *User) Compare(s string) error {
 }
 
 // GetUser will fetch user from db by username
-func GetUser(username string) *User {
+func GetUser(username string, dbCon *sqlx.DB) *User {
 	query := fmt.Sprintf(`SELECT * from "user" WHERE username='%s';`, username)
 	userObj := User{}
 	err := dbCon.Get(&userObj, query)
@@ -97,6 +95,4 @@ func MigrateTables(db *sqlx.DB) {
 	`
 
 	db.MustExec(userTableSQLQuery)
-
-	dbCon = db
 }
