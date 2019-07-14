@@ -7,12 +7,16 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis"
 	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/internal/pkg/models"
 )
 
 // DbCon is the sqlx db connection
 var DbCon *sqlx.DB
+
+// redis connection
+var RedisCon *redis.Client
 
 func homeHandler(c *gin.Context) {
 	usersData := []models.User{}

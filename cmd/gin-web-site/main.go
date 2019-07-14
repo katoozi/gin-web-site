@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis"
 	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/configs"
 	"github.com/katoozi/gin-web-site/internal/app/website"
@@ -28,7 +29,7 @@ func init() {
 }
 
 func main() {
-	// database configurations
+	// connect to postgresql
 	databaseConfig := fetchDatabaseConfig()
 	dbConnectionStr := fmt.Sprintf(
 		"user=%s dbname=%s password=%s sslmode=disable",
@@ -41,9 +42,22 @@ func main() {
 		log.Fatalf("Connect to db Failed: %v", err)
 	}
 	models.MigrateTables(db)
-
 	website.DbCon = db
 
+	// connect to redis
+	redisConfig := fetchRedisConfig()
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     redisConfig.GetAddr(),
+		Password: redisConfig.Password,
+		DB:       redisConfig.DB,
+	})
+	_, err = redisClient.Ping().Result()
+	if err != nil {
+		log.Fatalf("Error while connect to redis: %v\n", err)
+	}
+	website.RedisCon = redisClient
+
+	// load static files, templates, register routers. start server
 	r := gin.Default()
 	r.Static("/static", "./web/assets")
 	// r.StaticFS("/more_static", http.Dir("my_file_system"))
@@ -74,4 +88,10 @@ func fetchDatabaseConfig() *configs.DatabaseConfig {
 	databaseConfig := &configs.DatabaseConfig{}
 	viper.UnmarshalKey("database", &databaseConfig)
 	return databaseConfig
+}
+
+func fetchRedisConfig() *configs.RedisConfig {
+	redisConfig := &configs.RedisConfig{}
+	viper.UnmarshalKey("redis", &redisConfig)
+	return redisConfig
 }

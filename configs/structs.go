@@ -12,7 +12,7 @@ type ServerConfig struct {
 	Port int    `mapstructure:"port"`
 }
 
-// GetAddr generate the addr for our router
+// GetAddr generate the server connection address
 func (s *ServerConfig) GetAddr() string {
 	return s.Addr + ":" + strconv.Itoa(s.Port)
 }
@@ -24,6 +24,19 @@ type DatabaseConfig struct {
 	Password     string `mapstructure:"pass"`
 	Host         string `mapstructure:"host"`
 	Port         int    `mapstructure:"port"`
+}
+
+// RedisConfig is the redis client config shema
+type RedisConfig struct {
+	Addr     string `mapstructure:"addr"`
+	Port     int    `mapstructure:"port"`
+	Password string `mapstructure:"password"`
+	DB       int    `mapstructure:"db"`
+}
+
+// GetAddr generate the server connection address
+func (s *RedisConfig) GetAddr() string {
+	return s.Addr + ":" + strconv.Itoa(s.Port)
 }
 
 // SetDefaultValues set the default values of server and database sections

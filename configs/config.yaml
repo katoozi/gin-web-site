@@ -8,3 +8,9 @@ database:
   pass: 1234
   host: localhost
   port: 5432
+
+redis:
+  addr: localhost
+  port: 6379
+  db: 0
+  password:
