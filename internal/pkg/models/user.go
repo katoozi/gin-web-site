@@ -9,6 +9,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var userSQLQuery = `
+	CREATE TABLE IF NOT EXISTS "user" (
+		"id" serial not null PRIMARY KEY,
+		"first_name" varchar(30),
+		"last_name" varchar(150),
+		"password" varchar(130) not null,
+		"last_login" timestamptz,
+		"date_joined" timestamptz default now(),
+		"username" varchar(150) unique not null,
+		"email" varchar(254),
+		"is_active" boolean not null default 'true',
+		"is_staff" boolean not null default 'false',
+		"is_superuser" boolean not null default 'false'
+	);`
+
 // User will have the user table schema
 type User struct {
 	ID         int       `db:"id" sqltools:"id"`
