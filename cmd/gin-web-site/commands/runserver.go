@@ -6,10 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/configs"
 	"github.com/katoozi/gin-web-site/internal/app/website"
-	"github.com/katoozi/gin-web-site/internal/pkg/models"
 
 	"github.com/spf13/cobra"
 )
@@ -25,15 +23,6 @@ var RunServerCommand = &cobra.Command{
 }
 
 func runServer() {
-	// connect to postgresql
-	databaseConfig := fetchDatabaseConfig()
-	db, err := sqlx.Connect("postgres", configs.GetAddr(databaseConfig))
-	if err != nil {
-		log.Fatalf("Connect to db Failed: %v", err)
-	}
-	models.MigrateTables(db)
-	website.DbCon = db
-
 	// connect to redis
 	redisConfig := fetchRedisConfig()
 	redisClient := redis.NewClient(&redis.Options{
@@ -41,7 +30,7 @@ func runServer() {
 		Password: redisConfig.Password,
 		DB:       redisConfig.DB,
 	})
-	_, err = redisClient.Ping().Result()
+	_, err := redisClient.Ping().Result()
 	if err != nil {
 		log.Fatalf("Error while connect to redis: %v\n", err)
 	}

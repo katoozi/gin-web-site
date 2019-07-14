@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/katoozi/gin-web-site/cmd/gin-web-site/commands"
 	_ "github.com/katoozi/gin-web-site/cmd/gin-web-site/commands"
-	_ "github.com/lib/pq"
 
 	"github.com/spf13/cobra"
 )

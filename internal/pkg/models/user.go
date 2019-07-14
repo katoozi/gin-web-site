@@ -15,7 +15,7 @@ var userSQLQuery = `
 		"first_name" varchar(30),
 		"last_name" varchar(150),
 		"password" varchar(130) not null,
-		"last_login" timestamptz,
+		"last_login" timestamptz default now(),
 		"date_joined" timestamptz default now(),
 		"username" varchar(150) unique not null,
 		"email" varchar(254),
@@ -96,7 +96,7 @@ func GetUser(username string, dbCon *sqlx.DB) *User {
 	userObj := User{}
 	err := dbCon.Get(&userObj, query)
 	if err != nil {
-		log.Printf("Error while get user from db:%v", err)
+		// log.Printf("Error while get user from db:%v", err)
 		return nil
 	}
 	return &userObj
