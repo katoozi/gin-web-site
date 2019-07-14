@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
@@ -10,17 +11,18 @@ import (
 
 // User will have the user table schema
 type User struct {
-	ID        int    `db:"id" sqltools:"id"`
-	FirstName string `db:"first_name" sqltools:"first_name"`
-	LastName  string `db:"last_name" sqltools:"last_name"`
-	Password  string `db:"password" sqltools:"password"`
-	LastLogin string `db:"last_login" sqltools:"last_login"`
-	Username  string `db:"username" sqltools:"username"`
-	Email     string `db:"email" sqltools:"email"`
+	ID        int       `db:"id" sqltools:"id"`
+	FirstName string    `db:"first_name" sqltools:"first_name"`
+	LastName  string    `db:"last_name" sqltools:"last_name"`
+	Password  string    `db:"password" sqltools:"password"`
+	LastLogin time.Time `db:"last_login" sqltools:"last_login"`
+	Username  string    `db:"username" sqltools:"username"`
+	IsActive  bool      `db:"is_active" sqltools:"is_active"`
+	Email     string    `db:"email" sqltools:"email"`
 }
 
 // NewUser is the User type factory function
-func NewUser(firstName, lastName, username, email, password, lastLogin string) *User {
+func NewUser(firstName, lastName, username, email, password string, lastLogin time.Time) *User {
 	hashpassword, err := generate(password)
 	if err != nil {
 		log.Fatalf("Error while encrypting password: %v", err)
@@ -45,7 +47,7 @@ func (u *User) GenerateInsertQuery() string {
 		u.Email,
 		u.Username,
 		u.Password,
-		u.LastLogin,
+		u.LastLogin.Format(time.UnixDate),
 	)
 }
 
@@ -83,16 +85,15 @@ func MigrateTables(db *sqlx.DB) {
 	// create user table
 	userTableSQLQuery := `
 	CREATE TABLE IF NOT EXISTS "user" (
-		"id" serial,
+		"id" serial not null PRIMARY KEY,
 		"first_name" text,
 		"last_name" text,
-		"password" text,
-		"last_login" timestamp,
-		"username" text,
+		"password" text not null,
+		"last_login" timestamptz,
+		"username" text unique not null,
 		"email" text,
-		PRIMARY KEY("id")
+		"is_active" boolean not null default '1'
 	);
 	`
-
 	db.MustExec(userTableSQLQuery)
 }
