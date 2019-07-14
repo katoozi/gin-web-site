@@ -31,9 +31,9 @@ func homeHandler(c *gin.Context) {
 
 func insertDataHandler(c *gin.Context) {
 	usersData := []*models.User{
-		models.NewUser("mohammad", "katoozi", "katoozi", "k2527806@gmail.com", "12345", time.Date(2019, 07, 11, 11, 30, 30, 0, time.UTC)),
-		models.NewUserIsActive("mohammad", "katoozi", "katoozi1", "k2527806@gmail1.com", "123467", time.Date(2019, 07, 12, 12, 30, 30, 0, time.UTC), false),
-		models.NewUserIsActive("mohammad", "katoozi", "katoozi2", "k2527806@gmail2.com", "12346789", time.Date(2019, 07, 13, 13, 30, 30, 0, time.UTC), false),
+		models.NewUser("mohammad", "katoozi", "katoozi", "k2527806@gmail.com", "12345"),
+		models.NewUser("mohammad", "katoozi", "katoozi1", "k2527806@gmail1.com", "123467"),
+		models.NewUser("mohammad", "katoozi", "katoozi2", "k2527806@gmail2.com", "12346789"),
 	}
 	tx := DbCon.MustBegin()
 	for _, user := range usersData {
