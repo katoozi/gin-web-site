@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/spf13/viper"
@@ -28,6 +29,16 @@ type DatabaseConfig struct {
 	Password     string `mapstructure:"pass"`
 	Host         string `mapstructure:"host"`
 	Port         int    `mapstructure:"port"`
+}
+
+// GetAddr generate the server connection address
+func (s *DatabaseConfig) getAddr() string {
+	return fmt.Sprintf(
+		"user=%s dbname=%s password=%s sslmode=disable",
+		s.User,
+		s.DatabaseName,
+		s.Password,
+	)
 }
 
 // RedisConfig is the redis client config shema

@@ -31,13 +31,7 @@ func init() {
 func main() {
 	// connect to postgresql
 	databaseConfig := fetchDatabaseConfig()
-	dbConnectionStr := fmt.Sprintf(
-		"user=%s dbname=%s password=%s sslmode=disable",
-		databaseConfig.User,
-		databaseConfig.DatabaseName,
-		databaseConfig.Password,
-	)
-	db, err := sqlx.Connect("postgres", dbConnectionStr)
+	db, err := sqlx.Connect("postgres", configs.GetAddr(databaseConfig))
 	if err != nil {
 		log.Fatalf("Connect to db Failed: %v", err)
 	}

@@ -1,7 +1,6 @@
 package website
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -15,7 +14,7 @@ import (
 // DbCon is the sqlx db connection
 var DbCon *sqlx.DB
 
-// redis connection
+// RedisCon connection
 var RedisCon *redis.Client
 
 func homeHandler(c *gin.Context) {
@@ -41,7 +40,6 @@ func insertDataHandler(c *gin.Context) {
 	}
 	tx := DbCon.MustBegin()
 	for _, user := range usersData {
-		fmt.Println(user.GenerateInsertQuery())
 		tx.Exec(user.GenerateInsertQuery())
 	}
 	tx.Commit()
@@ -82,5 +80,18 @@ func checkLogin(c *gin.Context) {
 	c.SetCookie("user", user.Password, 3600, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"token": user.Password,
+	})
+}
+
+func testFunc(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"status": "you are logged in.",
+	})
+}
+
+func createCookie(c *gin.Context) {
+	c.SetCookie("sessionid", "s4qtx20gmkixl3yz6fqzbdecvlyj3smt", 3600, "/", "127.0.0.1", false, false)
+	c.JSON(http.StatusOK, gin.H{
+		"status": "cookie set successfully",
 	})
 }
