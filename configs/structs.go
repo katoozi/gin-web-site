@@ -6,6 +6,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+type serverAddress interface {
+	getAddr() string
+}
+
 // ServerConfig is the config.yaml server section schema
 type ServerConfig struct {
 	Addr string `mapstructure:"addr"`
@@ -13,7 +17,7 @@ type ServerConfig struct {
 }
 
 // GetAddr generate the server connection address
-func (s *ServerConfig) GetAddr() string {
+func (s *ServerConfig) getAddr() string {
 	return s.Addr + ":" + strconv.Itoa(s.Port)
 }
 
@@ -35,7 +39,7 @@ type RedisConfig struct {
 }
 
 // GetAddr generate the server connection address
-func (s *RedisConfig) GetAddr() string {
+func (s *RedisConfig) getAddr() string {
 	return s.Addr + ":" + strconv.Itoa(s.Port)
 }
 
@@ -52,4 +56,9 @@ func SetDefaultValues() {
 		Addr: "localhost",
 		Port: 8081,
 	})
+}
+
+// GetAddr will five you the server address of given config
+func GetAddr(addr serverAddress) string {
+	return addr.getAddr()
 }

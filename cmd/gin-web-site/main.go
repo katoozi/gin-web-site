@@ -47,7 +47,7 @@ func main() {
 	// connect to redis
 	redisConfig := fetchRedisConfig()
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     redisConfig.GetAddr(),
+		Addr:     configs.GetAddr(redisConfig),
 		Password: redisConfig.Password,
 		DB:       redisConfig.DB,
 	})
@@ -74,7 +74,7 @@ func main() {
 
 	// fetch server configs from config.yaml file
 	serverConfig := fetchServerConfig()
-	r.Run(serverConfig.GetAddr())
+	r.Run(configs.GetAddr(serverConfig))
 	fmt.Println("Start Listning...")
 }
 
