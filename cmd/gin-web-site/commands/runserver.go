@@ -17,12 +17,10 @@ var RunServerCommand = &cobra.Command{
 	Use:   "runserver",
 	Short: "start web server",
 	Long:  `start web server. configuration founds in config.yaml file`,
-	Run: func(cmd *cobra.Command, args []string) {
-		runServer()
-	},
+	Run:   runServer,
 }
 
-func runServer() {
+func runServer(cmd *cobra.Command, args []string) {
 	// connect to redis
 	redisConfig := fetchRedisConfig()
 	redisClient := redis.NewClient(&redis.Options{

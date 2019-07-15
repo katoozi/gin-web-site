@@ -16,13 +16,11 @@ import (
 var CreateSuperUserCommand = &cobra.Command{
 	Use:   "createsuperuser",
 	Short: "create user with superuser permissions",
-	Run: func(cmd *cobra.Command, args []string) {
-		createSuperuser()
-	},
+	Run:   createSuperuser,
 }
 
 // CreateSuperuser will create user with superuser permission in user table
-func createSuperuser() {
+func createSuperuser(cmd *cobra.Command, args []string) {
 	color.Green("Start Creating Superuser...")
 	var (
 		username    string
