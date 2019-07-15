@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/configs"
-	"github.com/katoozi/gin-web-site/internal/pkg/models"
+	"github.com/katoozi/gin-web-site/internal/pkg/auth"
 	"github.com/katoozi/gin-web-site/internal/app/website"
 	"github.com/spf13/viper"
 
@@ -34,7 +34,7 @@ func init() {
 		log.Fatalf("Connect to db Failed: %v", err)
 	}
 	dbCon = db
-	models.MigrateTables(db)
+	auth.MigrateTables(db)
 	website.DbCon = db
 
 }

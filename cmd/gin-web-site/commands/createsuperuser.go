@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/fatih/color"
-	"github.com/katoozi/gin-web-site/internal/pkg/models"
+	"github.com/katoozi/gin-web-site/internal/pkg/auth"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -56,7 +56,7 @@ func createSuperuser(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	user := models.NewUser("", "", username, email, pass)
+	user := auth.NewUser("", "", username, email, pass)
 	user.IsSperuser = true
 	user.IsStaff = true
 
@@ -70,7 +70,7 @@ func createSuperuser(cmd *cobra.Command, args []string) {
 }
 
 func checkUsername(username string) bool {
-	err := models.GetUser(username, dbCon)
+	err := auth.GetUser(username, dbCon)
 	if err == nil {
 		return true
 	}
