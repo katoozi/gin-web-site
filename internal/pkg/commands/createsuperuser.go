@@ -21,7 +21,6 @@ var CreateSuperUserCommand = &cobra.Command{
 
 // CreateSuperuser will create user with superuser permission in user table
 func createSuperuser(cmd *cobra.Command, args []string) {
-	color.Green("Start Creating Superuser...")
 	var (
 		username    string
 		pass        string
