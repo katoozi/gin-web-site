@@ -1,0 +1,41 @@
+version: '3'
+services:
+  gin-web-site:
+    container_name: "gin-web-site"
+    build: .
+    ports:
+      - 8081:8081
+    restart: on-failure
+    depends_on:
+      - postgresql
+      - redis
+    links:
+      - postgresql
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  # mongodb:
+  #   image: "mongo:latest"
+  #   container_name: "gin-mongodb"
+  #   volumes:
+  #     - ./data/db:/data/db
+  #   ports:
+  #     - 27017:27017
+  postgresql:
+    image: "postgres:latest"
+    container_name: "gin-postgresql"
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: user_go
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: mydb
+    ports:
+      - 5432:5432
+  redis:
+    image: "redis:latest"
+    container_name: "gin-redis"
+    ports:
+      - 6379:6379
