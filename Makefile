@@ -14,3 +14,9 @@ run:
 
 createsuperuser:
 	go run cmd/gin-web-site/main.go createsuperuser
+
+buildDockerCompose:
+	docker-compose up --build
+
+runDockerCompose:
+	docker-compose up
