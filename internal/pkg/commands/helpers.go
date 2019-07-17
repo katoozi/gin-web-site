@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/configs"
-	"github.com/katoozi/gin-web-site/internal/pkg/auth"
 	"github.com/katoozi/gin-web-site/internal/app/website"
+	"github.com/katoozi/gin-web-site/internal/pkg/auth"
 	"github.com/spf13/viper"
 
 	_ "github.com/lib/pq" // register postgresql driver
