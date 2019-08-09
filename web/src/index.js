@@ -1,16 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import { notificationReducer } from "./redux/reducers";
+import store from "./redux/store";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-
-const store = createStore(notificationReducer);
-
-// log the store state for every dispatch
-store.subscribe(() => console.log(store.getState()));
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,6 +1,6 @@
 import { createStore } from "redux";
-import onlineWebSocket from "./index";
+import {notificationReducer} from "./reducers";
 
-const store = createStore(onlineWebSocket);
+const store = createStore(notificationReducer);
 
 export default store;
