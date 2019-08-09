@@ -1,6 +1,8 @@
-import { combineReducers } from "redux";
+import { combineReducers, createStore } from "redux";
 import * as reducers from "./reducers";
 
-const onlineWebSocket = combineReducers(reducers);
+const rootReducer = combineReducers(reducers);
 
-export default onlineWebSocket;
+const store = createStore(rootReducer);
+
+export default store;

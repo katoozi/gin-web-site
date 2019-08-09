@@ -19,7 +19,7 @@ ToastList.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    notifications: state.notifications
+    notifications: state.notificationReducer.notifications
   };
 };
 
