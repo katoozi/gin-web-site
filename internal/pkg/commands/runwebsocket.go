@@ -75,7 +75,7 @@ func setupRoutes() {
 }
 
 func runWebSocket(cmd *cobra.Command, args []string) {
-	fmt.Println("Chat App v0.01")
+	fmt.Println("Start to Listen...")
 	setupRoutes()
 	http.ListenAndServe(":8080", nil)
 }
