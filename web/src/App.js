@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./App.css";
 import { Container } from "react-bootstrap";
 import { connect } from "./websocket";
 import ToastList from "./components/toast_list";
