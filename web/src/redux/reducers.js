@@ -1,4 +1,4 @@
-import { RECEIVE_NOTIFICATION } from "./actionTypes";
+import { RECEIVE_NOTIFICATION, DELETE_NOTIFICATION } from "./actionTypes";
 
 
 const initialState = {
@@ -11,6 +11,10 @@ export function notificationReducer(state = initialState, action) {
     case RECEIVE_NOTIFICATION:
       return Object.assign({}, state, {
         notifications: [...state.notifications, action.text]
+      });
+    case DELETE_NOTIFICATION:
+      return Object.assign({}, state, {
+        notifications: [...state.notifications.filter((notification) => notification !== action.text)]
       });
     default:
       return state;

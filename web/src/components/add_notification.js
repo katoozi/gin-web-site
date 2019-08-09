@@ -6,25 +6,38 @@ import {
   ButtonToolbar
 } from "react-bootstrap";
 import { sendMsg, closeSocket } from "../websocket";
-import { addNotification } from "../redux/actions";
+import { addNotification, deleteNotification } from "../redux/actions";
 import { connect } from "react-redux";
 
 class AddNotification extends React.Component {
+  state = {
+    input_state: false,
+    message_input_text: ""
+  };
   constructor(props) {
     super(props);
     this.messageHandler = this.messageHandler.bind(this);
     this.send = this.send.bind(this);
+    this.delete = this.delete.bind(this);
+    this.close = this.close.bind(this);
   }
   send() {
     let value = this.state.message_input_text;
-    console.log(value);
     sendMsg(value);
     this.props.dispatch(addNotification(value));
+  }
+
+  delete() {
+    let value = this.state.message_input_text;
+    this.props.dispatch(deleteNotification(value));
   }
 
   close() {
     console.log("Close Socket");
     closeSocket(1000, "close by user");
+    this.setState({
+      input_state: true
+    })
   }
 
   messageHandler(input_obj) {
@@ -45,6 +58,7 @@ class AddNotification extends React.Component {
               </InputGroup.Prepend> */}
           <FormControl
             type="text"
+            disabled={this.state.input_state}
             onKeyUp={this.messageHandler}
             placeholder="message to send"
             aria-label="message"
@@ -53,6 +67,9 @@ class AddNotification extends React.Component {
         </InputGroup>
         <Button variant="outline-primary" onClick={this.send} value="Hit">
           Hit
+        </Button>
+        <Button variant="outline-primary" onClick={this.delete} value="Hit">
+          Delete
         </Button>
         <Button variant="outline-danger" onClick={this.close}>
           Close Socket
