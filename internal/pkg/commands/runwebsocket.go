@@ -26,6 +26,8 @@ var upgrader = websocket.Upgrader{
 	// this will allow us to make requests from our React
 	// development server to here.
 	// For now, we'll do no checking and just allow any connection
+	// in production must be nil
+	// in develop must be `func(r *http.Request) bool { return true }`
 	CheckOrigin: func(r *http.Request) bool { return true },
 }
 
@@ -59,19 +61,24 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	// connection
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println(err)
+		log.Printf("Error while upgrade connection: %v", err)
+		return
 	}
 	// listen indefinitely for new messages coming
 	// through on our WebSocket connection
 	reader(ws)
 }
 
+func httpFileHandler(response http.ResponseWriter, request *http.Request) {
+	http.ServeFile(response, request, "./web/build/index.html")
+}
+
 func setupRoutes() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Simple Server")
-	})
 	// mape our `/ws` endpoint to the `serveWs` function
 	http.HandleFunc("/ws", serveWs)
+	fs := http.FileServer(http.Dir("./web/build/static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	http.HandleFunc("/", httpFileHandler)
 }
 
 func runWebSocket(cmd *cobra.Command, args []string) {
