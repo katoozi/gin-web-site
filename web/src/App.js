@@ -1,8 +1,16 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { connect } from "./websocket";
-import ToastList from "./components/toast_list";
 import AddNotification from "./components/add_notification";
+
+function About() {
+  return <h2>About</h2>;
+}
+
+function Users() {
+  return <h2>Users</h2>;
+}
 
 class App extends Component {
   constructor(props) {
@@ -12,12 +20,27 @@ class App extends Component {
 
   render() {
     return (
-      <Container>
-        <div className="app">
-          <AddNotification />
-        </div>
-        <ToastList />
-      </Container>
+      <Router>
+        <Container>
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/about/">About</Link>
+              </li>
+              <li>
+                <Link to="/users/">Users</Link>
+              </li>
+            </ul>
+          </nav>
+
+          <Route path="/" exact component={AddNotification} />
+          <Route path="/about/" component={About} />
+          <Route path="/users/" component={Users} />
+        </Container>
+      </Router>
     );
   }
 }

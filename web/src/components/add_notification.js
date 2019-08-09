@@ -5,6 +5,7 @@ import {
   FormControl,
   ButtonToolbar
 } from "react-bootstrap";
+import ToastList from "./toast_list";
 import { sendMsg, closeSocket } from "../websocket";
 import { addNotification, deleteNotification } from "../redux/actions";
 import { connect } from "react-redux";
@@ -51,30 +52,37 @@ class AddNotification extends React.Component {
   }
   render() {
     return (
-      <ButtonToolbar aria-label="WebSocket Settings" className="app md-3">
-        <InputGroup>
-          {/* <InputGroup.Prepend>
+      <div className="app">
+        <ButtonToolbar aria-label="WebSocket Settings" className="app md-3">
+          <InputGroup>
+            {/* <InputGroup.Prepend>
                 <InputGroup.Text id="btnGroupAddon">@</InputGroup.Text>
               </InputGroup.Prepend> */}
-          <FormControl
-            type="text"
-            disabled={this.state.input_state}
-            onKeyUp={this.messageHandler}
-            placeholder="message to send"
-            aria-label="message"
-            aria-describedby="btnGroupAddon"
-          />
-        </InputGroup>
-        <Button variant="outline-primary" onClick={this.send} value="Hit">
-          Hit
-        </Button>
-        <Button variant="outline-primary" onClick={this.delete} value="Hit">
-          Delete
-        </Button>
-        <Button variant="outline-danger" onClick={this.close}>
-          Close Socket
-        </Button>
-      </ButtonToolbar>
+            <FormControl
+              type="text"
+              disabled={this.state.input_state}
+              onKeyUp={this.messageHandler}
+              placeholder="message to send"
+              aria-label="message"
+              aria-describedby="btnGroupAddon"
+            />
+          </InputGroup>
+          <Button variant="outline-primary" onClick={this.send} value="Hit">
+            Hit
+          </Button>
+          <Button
+            variant="outline-primary"
+            onClick={this.delete}
+            value="Hit"
+          >
+            Delete
+          </Button>
+          <Button variant="outline-danger" onClick={this.close}>
+            Close Socket
+          </Button>
+        </ButtonToolbar>
+        <ToastList/>
+      </div>
     );
   }
 }
