@@ -10,11 +10,11 @@ export function notificationReducer(state = initialState, action) {
   switch (action.type) {
     case RECEIVE_NOTIFICATION:
       return Object.assign({}, state, {
-        notifications: [...state.notifications, action.text]
+        notifications: [...state.notifications, action]
       });
     case DELETE_NOTIFICATION:
       return Object.assign({}, state, {
-        notifications: [...state.notifications.filter((notification) => notification !== action.text)]
+        notifications: [...state.notifications.filter((notification) => notification.text !== action.text)]
       });
     default:
       return state;

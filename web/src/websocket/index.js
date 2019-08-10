@@ -24,7 +24,9 @@ let connect = () => {
 
 let sendMsg = msg => {
   console.log("sending msg: ", msg);
-  socket.send(msg);
+  socket.send(
+    JSON.stringify(msg)
+  );
 };
 
 let closeSocket = (code, msg) => {

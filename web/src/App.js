@@ -1,6 +1,10 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { Container } from "react-bootstrap";
+import {
+  BrowserRouter as Router,
+  Route,
+  NavLink
+} from "react-router-dom";
+import { Container, Nav } from "react-bootstrap";
 import { connect } from "./websocket";
 import AddNotification from "./components/add_notification";
 
@@ -22,19 +26,23 @@ class App extends Component {
     return (
       <Router>
         <Container>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/about/">About</Link>
-              </li>
-              <li>
-                <Link to="/users/">Users</Link>
-              </li>
-            </ul>
-          </nav>
+          <Nav activeKey="/">
+            <Nav.Item>
+              <NavLink className="nav-link" role="button" to="/">
+                Home
+              </NavLink>
+            </Nav.Item>
+            <Nav.Item>
+              <NavLink className="nav-link" role="button" to="/about/">
+                About
+              </NavLink>
+            </Nav.Item>
+            <Nav.Item>
+              <NavLink className="nav-link" role="button" to="/users/">
+                Users
+              </NavLink>
+            </Nav.Item>
+          </Nav>
 
           <Route path="/" exact component={AddNotification} />
           <Route path="/about/" component={About} />

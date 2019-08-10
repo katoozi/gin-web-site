@@ -5,16 +5,23 @@ import { connect } from "react-redux";
 
 class ToastList extends React.Component {
   render() {
-    let notifications = this.props.notifications;
-    notifications.map(notification => (
-      <ListGroup.Item>{notification}</ListGroup.Item>
+    const { notifications } = this.props;
+    let notifications_list = notifications.map((notification, index) => (
+      <ListGroup.Item key={index}>
+        {notification.text}
+      </ListGroup.Item>
     ));
-    return <ListGroup>{notifications}</ListGroup>;
+    return <ListGroup>{notifications_list}</ListGroup>;
   }
 }
 
 ToastList.propTypes = {
-  notifications: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
+  notifications: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      action_type: PropTypes.string.isRequired
+    })
+  ).isRequired
 };
 
 const mapStateToProps = state => {

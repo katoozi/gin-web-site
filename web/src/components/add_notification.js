@@ -24,8 +24,12 @@ class AddNotification extends React.Component {
   }
   send() {
     let value = this.state.message_input_text;
-    sendMsg(value);
-    this.props.dispatch(addNotification(value));
+    let msg = {
+      text: value,
+      action_type: 'RECEIVE_NOTIFICATION'
+    };
+    sendMsg(msg);
+    this.props.dispatch(addNotification(msg));
   }
 
   delete() {
@@ -67,9 +71,11 @@ class AddNotification extends React.Component {
               aria-describedby="btnGroupAddon"
             />
           </InputGroup>
+          &nbsp;
           <Button variant="outline-primary" onClick={this.send} value="Hit">
             Hit
           </Button>
+          &nbsp;
           <Button
             variant="outline-primary"
             onClick={this.delete}
@@ -77,11 +83,13 @@ class AddNotification extends React.Component {
           >
             Delete
           </Button>
+          &nbsp;
           <Button variant="outline-danger" onClick={this.close}>
             Close Socket
           </Button>
         </ButtonToolbar>
-        <ToastList/>
+        <br />
+        <ToastList />
       </div>
     );
   }
