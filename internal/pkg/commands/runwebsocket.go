@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,6 +15,70 @@ var RunWebSocketCommand = &cobra.Command{
 	Use:   "runwebsocket",
 	Short: "start websocket server",
 	Run:   runWebSocket,
+}
+
+// Packet represents application level data.
+type Packet struct {
+	ActionType  string `json:"action_type"`
+	Text        string `json:"text"`
+	MessageType int
+}
+
+// Channel wraps user connection.
+type Channel struct {
+	conn *websocket.Conn // WebSocket connection.
+	send chan Packet     // Outgoing packets queue.
+}
+
+func (ch *Channel) reader() {
+	for {
+		// read in a message
+		messageType, p, err := ch.conn.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		fmt.Println(messageType)
+		fmt.Println(string(p))
+		pkt := readPacket(p, messageType)
+		ch.send <- *pkt
+	}
+}
+
+func (ch *Channel) writer() {
+	for pkt := range ch.send {
+		data, err := json.Marshal(pkt)
+		if err != nil {
+			log.Printf("Error while marshaling json: %v", err)
+		}
+		if err := ch.conn.WriteMessage(pkt.MessageType, data); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
+
+// NewChannel is the Channel factorty function
+func NewChannel(conn *websocket.Conn) *Channel {
+	c := &Channel{
+		conn: conn,
+		send: make(chan Packet, 10),
+	}
+
+	go c.reader()
+	go c.writer()
+
+	return c
+}
+
+func readPacket(data []byte, messageType int) *Packet {
+	packetData := &Packet{}
+	err := json.Unmarshal(data, packetData)
+	if err != nil {
+		log.Printf("Error while unmarshal json: %v", err)
+	}
+	packetData.MessageType = messageType
+	return packetData
 }
 
 // We'll need to define an Upgrader
@@ -34,24 +99,24 @@ var upgrader = websocket.Upgrader{
 // define a reader which will listen for
 // new messages being sent to our WebSocket
 // endpoint
-func reader(conn *websocket.Conn) {
-	for {
-		// read in a message
-		messageType, p, err := conn.ReadMessage()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		// print out that message for clarity
-		fmt.Println(string(p))
+// func reader(conn *websocket.Conn) {
+// 	for {
+// 		// read in a message
+// 		messageType, p, err := conn.ReadMessage()
+// 		if err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
+// 		// print out that message for clarity
+// 		fmt.Println(string(p))
 
-		if err := conn.WriteMessage(messageType, p); err != nil {
-			log.Println(err)
-			return
-		}
+// 		if err := conn.WriteMessage(messageType, p); err != nil {
+// 			log.Println(err)
+// 			return
+// 		}
 
-	}
-}
+// 	}
+// }
 
 // define our WebSocket endpoint
 func serveWs(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +131,9 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	}
 	// listen indefinitely for new messages coming
 	// through on our WebSocket connection
-	reader(ws)
+	// ch := NewChannel(ws)
+	NewChannel(ws)
+	// reader(ws)
 }
 
 func httpFileHandler(response http.ResponseWriter, request *http.Request) {
