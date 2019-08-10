@@ -32,14 +32,10 @@ type Channel struct {
 
 func (ch *Channel) reader() {
 	for {
-		// read in a message
 		messageType, p, err := ch.conn.ReadMessage()
 		if err != nil {
-			log.Println(err)
 			return
 		}
-		fmt.Println(messageType)
-		fmt.Println(string(p))
 		pkt := readPacket(p, messageType)
 		ch.send <- *pkt
 	}
@@ -52,7 +48,6 @@ func (ch *Channel) writer() {
 			log.Printf("Error while marshaling json: %v", err)
 		}
 		if err := ch.conn.WriteMessage(pkt.MessageType, data); err != nil {
-			log.Println(err)
 			return
 		}
 	}
@@ -120,8 +115,6 @@ var upgrader = websocket.Upgrader{
 
 // define our WebSocket endpoint
 func serveWs(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.Host)
-
 	// upgrade this connection to a WebSocket
 	// connection
 	ws, err := upgrader.Upgrade(w, r, nil)

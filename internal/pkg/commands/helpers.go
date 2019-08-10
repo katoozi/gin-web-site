@@ -15,7 +15,7 @@ import (
 
 var dbCon *sqlx.DB
 
-func init() {
+func Init() {
 	configs.SetDefaultValues()
 
 	viper.SetConfigName("config")

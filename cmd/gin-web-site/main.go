@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/katoozi/gin-web-site/internal/pkg/commands"
-	_ "github.com/katoozi/gin-web-site/internal/pkg/commands"
 
 	"github.com/spf13/cobra"
 )
@@ -20,5 +19,6 @@ func init() {
 }
 
 func main() {
+	commands.Init()
 	rootCmd.Execute()
 }
