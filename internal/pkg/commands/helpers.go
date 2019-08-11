@@ -15,6 +15,7 @@ import (
 
 var dbCon *sqlx.DB
 
+// Init will intiate the db and load settings from yaml file
 func Init() {
 	configs.SetDefaultValues()
 

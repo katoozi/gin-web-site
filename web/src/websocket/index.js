@@ -9,8 +9,7 @@ let connect = () => {
   };
 
   socket.onmessage = msg => {
-    console.log("receive msg");
-    console.log(msg);
+    console.log("receive msg: ", msg);
   };
 
   socket.onclose = event => {
