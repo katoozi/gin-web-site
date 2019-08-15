@@ -12,7 +12,3 @@ RUN go build cmd/gin-web-site/main.go
 # CMD ["go", "run", "cmd/gin-web-site/main.go"]
 CMD ["./main", "runserver"]
 EXPOSE 8081
-
-# FROM redis
-# COPY redis.conf /usr/local/etc/redis/redis.conf
-# CMD [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
