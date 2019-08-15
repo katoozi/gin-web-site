@@ -6,7 +6,7 @@ database:
   db_name: mydb
   user: user_go
   pass: 1234
-  host: localhost
+  host: postgres
   port: 5432
 
 redis:

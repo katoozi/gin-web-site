@@ -34,7 +34,8 @@ type DatabaseConfig struct {
 // GetAddr generate the server connection address
 func (s *DatabaseConfig) getAddr() string {
 	return fmt.Sprintf(
-		"user=%s dbname=%s password=%s sslmode=disable",
+		"host=%s user=%s dbname=%s password=%s sslmode=disable",
+		s.Host,
 		s.User,
 		s.DatabaseName,
 		s.Password,

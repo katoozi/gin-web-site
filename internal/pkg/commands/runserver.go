@@ -45,7 +45,7 @@ func runServer(cmd *cobra.Command, args []string) {
 
 	// load html files
 	// r.LoadHTMLGlob("./web/templates/components/*")
-	r.LoadHTMLGlob("./web/templates/*.html")
+	r.LoadHTMLGlob("./web/public/*.html")
 	//r.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 
 	website.RegisterRoutes(r)
