@@ -10,7 +10,7 @@ database:
   port: 5432
 
 redis:
-  addr: localhost
+  addr: redis
   port: 6379
   db: 0
   password:
