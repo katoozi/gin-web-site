@@ -1,50 +1,40 @@
 version: '3.7'
 services:
   gin-web-site:
-    container_name: "gin-web-site"
-    build: .
-    ports:
-      - "8081:8081"
-    restart: on-failure
+    build: ./project
+    restart: always
     depends_on:
       - postgresql
       - redis
     links:
       - postgresql
       - redis
+    expose:
+      - "8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
       interval: 30s
       timeout: 10s
       retries: 5
-  # mongodb:
-  #   image: "mongo:latest"
-  #   container_name: "gin-mongodb"
-  #   volumes:
-  #     - ./data/db:/data/db
-  #   ports:
-  #     - 27017:27017
+    deploy:
+      mode: replicated
+      replicas: 3
+
   postgresql:
     image: "postgres:latest"
-    container_name: "gin-postgresql"
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: 1234
       POSTGRES_USER: user_go
       POSTGRES_DB: mydb
-    volumes:
-       - db-data:/var/lib/mysql/data
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
 
   redis:
     image: "redis:latest"
-    container_name: "gin-redis"
-    ports:
-      - "6379"
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - db-data
-
-volumes:
-  db-data:
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 3
