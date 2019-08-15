@@ -21,6 +21,7 @@ var RunServerCommand = &cobra.Command{
 }
 
 func runServer(cmd *cobra.Command, args []string) {
+	Init()
 	// connect to redis
 	redisConfig := fetchRedisConfig()
 	redisClient := redis.NewClient(&redis.Options{

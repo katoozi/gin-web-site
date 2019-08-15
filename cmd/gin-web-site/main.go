@@ -19,6 +19,5 @@ func init() {
 }
 
 func main() {
-	commands.Init()
 	rootCmd.Execute()
 }
