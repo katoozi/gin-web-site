@@ -23,7 +23,7 @@ func homeHandler(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Error while unmarshal to struct users data: %v", err)
 	}
-	c.HTML(http.StatusOK, "home.html", gin.H{
+	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":  "My First Gin Website",
 		"time":   time.Now(),
 		"number": 12000,

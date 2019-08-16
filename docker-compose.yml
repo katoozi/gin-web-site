@@ -38,3 +38,14 @@ services:
     deploy:
       mode: replicated
       replicas: 3
+
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - "80:80"
+    deploy:
+      mode: replicated
+      replicas: 3
+    depends_on:
+      - gin-web-site

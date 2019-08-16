@@ -1,12 +1,12 @@
 server:
-  addr: localhost
+  addr: 0.0.0.0
   port: 8000
 
 database:
   db_name: mydb
   user: user_go
   pass: 1234
-  host: postgres
+  host: postgresql
   port: 5432
 
 redis:

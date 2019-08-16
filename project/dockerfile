@@ -1,8 +1,8 @@
 FROM golang:1.12
 WORKDIR /gin-web-site
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
+# COPY go.mod .
+# COPY go.sum .
+# RUN go mod download
 COPY . .
-RUN go build cmd/gin-web-site/main.go
-CMD ["./main", "runserver"]
+RUN go build -mod=vendor cmd/gin-web-site/main.go
+CMD ["./main", "runwebsocket"]

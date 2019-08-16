@@ -1,7 +1,7 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 // websocket/index.js
-var socket = new ReconnectingWebSocket("ws://127.0.0.1:8080/ws");
+var socket = new ReconnectingWebSocket("ws://127.0.0.1:8000/ws");
 
 let connect = () => {
   console.log("Attempting Connection...");
