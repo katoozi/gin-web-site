@@ -44,8 +44,5 @@ services:
     restart: always
     ports:
       - "80:80"
-    deploy:
-      mode: replicated
-      replicas: 3
     depends_on:
       - gin-web-site
