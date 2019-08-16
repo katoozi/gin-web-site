@@ -21,7 +21,7 @@ services:
       replicas: 3
 
   postgresql:
-    image: "postgres:latest"
+    image: "postgres:alpine"
     volumes:
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgres/data:/var/lib/postgresql/data
@@ -33,7 +33,7 @@ services:
       - "5432"
 
   redis:
-    image: "redis:latest"
+    image: "redis:alpine"
     restart: always
     deploy:
       mode: replicated
