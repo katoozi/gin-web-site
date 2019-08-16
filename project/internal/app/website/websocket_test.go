@@ -1,4 +1,4 @@
-package commands
+package website
 
 import (
 	"encoding/json"

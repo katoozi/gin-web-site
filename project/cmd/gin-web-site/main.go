@@ -15,7 +15,6 @@ func init() {
 	}
 	rootCmd.AddCommand(commands.RunServerCommand)
 	rootCmd.AddCommand(commands.CreateSuperUserCommand)
-	rootCmd.AddCommand(commands.RunWebSocketCommand)
 }
 
 func main() {

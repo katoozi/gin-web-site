@@ -10,6 +10,9 @@ func RegisterRoutes(engine *gin.Engine) {
 	engine.GET("/insert-data", insertDataHandler)
 	engine.POST("/login", checkLogin)
 	engine.GET("/create-cookie", createCookie)
+	engine.GET("/ws", func(c *gin.Context) {
+		serveWs(c.Writer, c.Request)
+	})
 
 	authorized := engine.Group("/user")
 	authorized.Use(AuthRequired())

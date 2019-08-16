@@ -1,21 +1,12 @@
-package commands
+package website
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
-	"github.com/spf13/cobra"
 )
-
-// RunWebSocketCommand is a cobra command that start web server
-var RunWebSocketCommand = &cobra.Command{
-	Use:   "runwebsocket",
-	Short: "start websocket server",
-	Run:   runWebSocket,
-}
 
 // Packet represents application level data.
 type Packet struct {
@@ -91,28 +82,6 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true },
 }
 
-// define a reader which will listen for
-// new messages being sent to our WebSocket
-// endpoint
-// func reader(conn *websocket.Conn) {
-// 	for {
-// 		// read in a message
-// 		messageType, p, err := conn.ReadMessage()
-// 		if err != nil {
-// 			log.Println(err)
-// 			return
-// 		}
-// 		// print out that message for clarity
-// 		fmt.Println(string(p))
-
-// 		if err := conn.WriteMessage(messageType, p); err != nil {
-// 			log.Println(err)
-// 			return
-// 		}
-
-// 	}
-// }
-
 // define our WebSocket endpoint
 func serveWs(w http.ResponseWriter, r *http.Request) {
 	// upgrade this connection to a WebSocket
@@ -126,23 +95,4 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	// through on our WebSocket connection
 	// ch := NewChannel(ws)
 	NewChannel(ws)
-	// reader(ws)
-}
-
-func httpFileHandler(response http.ResponseWriter, request *http.Request) {
-	http.ServeFile(response, request, "./web/build/index.html")
-}
-
-func setupRoutes() {
-	// mape our `/ws` endpoint to the `serveWs` function
-	http.HandleFunc("/ws", serveWs)
-	fs := http.FileServer(http.Dir("./web/build/static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	http.HandleFunc("/", httpFileHandler)
-}
-
-func runWebSocket(cmd *cobra.Command, args []string) {
-	fmt.Println("Start to Listen...")
-	setupRoutes()
-	http.ListenAndServe(":8080", nil)
 }
