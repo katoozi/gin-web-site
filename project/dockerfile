@@ -5,4 +5,4 @@ WORKDIR /gin-web-site
 # RUN go mod download
 COPY . .
 RUN go build -mod=vendor cmd/gin-web-site/main.go
-CMD ["./main", "runwebsocket"]
+CMD ["./main", "runserver"]
