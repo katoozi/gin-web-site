@@ -19,19 +19,39 @@ services:
       - "traefik.websocket.port=8000" # forward request to port 8000 on container
 
   postgresql:
-    image: "postgres:alpine"
-    volumes:
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./postgres/data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_USER: user_go
-      POSTGRES_DB: mydb
+    image: 'bitnami/postgresql:11'
     expose:
       - "5432"
-    deploy:
-      mode: replicated
-      replicas: 3
+    volumes:
+      - 'postgresql_master_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=postgresReplication
+      - POSTGRESQL_USERNAME=user_go
+      - POSTGRESQL_PASSWORD=1234
+      - POSTGRESQL_DATABASE=mydb
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - postgres-replication
+      - default
+
+  postgresql-slave:
+    image: 'bitnami/postgresql:11'
+    expose:
+      - "5432"
+    depends_on:
+      - postgresql
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=postgresReplication
+      - POSTGRESQL_MASTER_HOST=postgresql
+      - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - postgres-replication
 
   redis:
     image: "redis:alpine"
@@ -53,7 +73,6 @@ services:
       - redis
     networks:
       - redis-replication
-      - default
 
   reverse-proxy:
     image: traefik:latest
@@ -67,3 +86,9 @@ services:
 networks:
   redis-replication:
     driver: bridge
+  postgres-replication:
+    driver: bridge
+
+volumes:
+  postgresql_master_data:
+    driver: local
