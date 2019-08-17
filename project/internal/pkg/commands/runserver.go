@@ -38,6 +38,7 @@ func runServer(cmd *cobra.Command, args []string) {
 	// load static files, templates, register routers. start server
 	r := gin.Default()
 	r.Static("/static", "./web/build/static")
+	r.StaticFile("/manifest.json", "./web/build/manifest.json")
 	// r.StaticFS("/more_static", http.Dir("my_file_system"))
 	// r.StaticFile("/favicon.ico", "./resources/favicon.ico")
 
