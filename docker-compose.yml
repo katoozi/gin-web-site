@@ -9,16 +9,14 @@ services:
     links:
       - postgresql
       - redis
-    expose:
-      - "8000"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
     deploy:
       mode: replicated
       replicas: 3
+    labels:
+      - "traefik.basic.frontend.rule=Host:localhost"
+      - "traefik.basic.port=8000"
+      - "traefik.websocket.frontend.rule=Host:127.0.0.1"
+      - "traefik.websocket.port=8000" # forward request to port 8000 on container
 
   postgresql:
     image: "postgres:alpine"
@@ -44,31 +42,11 @@ services:
     expose:
       - "6379"
 
-  nginx:
-    build: ./nginx
-    restart: always
-    ports:
-      - "80:80"
-    depends_on:
-      - gin-web-site
-
   reverse-proxy:
     image: traefik:latest
-    # Enables the web UI and tells Traefik to listen to docker
     command: --api --docker
     ports:
-      # The HTTP port
-      # - "80:80"
-      # # The Web UI (enabled by --api)
+      - "80:80"
       - "8080:8080"
     volumes:
-      # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
-
-  whoami:
-    image: containous/whoami # A container that exposes an API to show its IP address
-    labels:
-      - "traefik.frontend.rule=Host:whoami.docker.localhost"
-    deploy:
-      mode: replicated
-      replicas: 3
