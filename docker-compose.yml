@@ -14,11 +14,6 @@ services:
       replicas: 3
     expose:
       - "8000"
-    # labels:
-    #   - "traefik.basic.frontend.rule=Host:localhost"
-    #   - "traefik.basic.port=8000"
-    #   - "traefik.websocket.frontend.rule=Host:127.0.0.1"
-    #   - "traefik.websocket.port=8000" # forward request to port 8000 on container
 
   postgresql:
     image: 'bitnami/postgresql:11'
@@ -75,15 +70,6 @@ services:
       - redis
     networks:
       - redis-replication
-
-  # reverse-proxy:
-  #   image: traefik:latest
-  #   command: --api --docker
-  #   ports:
-  #     - "80:80"
-  #     - "8080:8080"
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
 
   envory:
     build: ./envoy
