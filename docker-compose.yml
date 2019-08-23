@@ -71,7 +71,7 @@ services:
     networks:
       - redis-replication
 
-  envory:
+  envoy:
     build: ./envoy
     restart: always
     depends_on:
