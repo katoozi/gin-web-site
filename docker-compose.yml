@@ -20,7 +20,7 @@ services:
     expose:
       - "5432"
     volumes:
-      - 'postgresql_master_data:/bitnami/postgresql'
+      - 'postgresql_data:/bitnami/postgresql'
     environment:
       - POSTGRESQL_REPLICATION_MODE=master
       - POSTGRESQL_REPLICATION_USER=repl_user
@@ -37,6 +37,8 @@ services:
     image: 'bitnami/postgresql:11'
     expose:
       - "5432"
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql-slave'
     depends_on:
       - postgresql
     environment:
@@ -56,6 +58,8 @@ services:
     restart: always
     expose:
       - "6379"
+    volumes:
+      - 'redis_data:/redis/master'
     networks:
       - redis-replication
       - default
@@ -65,6 +69,8 @@ services:
     container_name: slave
     ports:
       - "6380:6379"
+    volumes:
+      - redis_data:/redis/slave
     command: redis-server --slaveof redis 6379
     depends_on:
       - redis
@@ -87,5 +93,7 @@ networks:
     driver: bridge
 
 volumes:
-  postgresql_master_data:
+  postgresql_data:
+    driver: local
+  redis_data:
     driver: local
