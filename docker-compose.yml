@@ -93,10 +93,13 @@ services:
 
   reverse-proxy:
     image: traefik:latest
+    container_name: load-balancer
     command: --api --docker
     ports:
       - "80:80"
       - "8080:8080"
+    depends_on:
+      - web-server
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
