@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  gin-web-site:
+  web-server:
     build: ./project
     restart: always
     depends_on:
@@ -20,6 +20,7 @@ services:
 
   postgresql:
     image: 'bitnami/postgresql:11'
+    container_name: postgresql-master
     expose:
       - "5432"
     volumes:
@@ -38,6 +39,7 @@ services:
 
   postgresql-slave:
     image: 'bitnami/postgresql:11'
+    container_name: postgresql-slave
     expose:
       - "5432"
     depends_on:
@@ -55,7 +57,7 @@ services:
 
   redis:
     image: "redis:alpine"
-    container_name: redis_master
+    container_name: redis-master
     restart: always
     expose:
       - "6379"
@@ -65,7 +67,7 @@ services:
 
   redis-slave:
     image: "redis:alpine"
-    container_name: slave
+    container_name: redis-slave
     ports:
       - "6380:6379"
     command: redis-server --slaveof redis 6379
