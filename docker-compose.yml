@@ -67,14 +67,29 @@ services:
 
   redis-slave:
     image: "redis:alpine"
-    container_name: redis-slave
-    ports:
-      - "6380:6379"
+    # container_name: redis-slave
+    # ports:
+    #   - "6380:6379"
     command: redis-server --slaveof redis 6379
     depends_on:
       - redis
     networks:
       - redis-replication
+    deploy:
+      mode: replicated
+      replicas: 2
+
+  redis-sentinel:
+    image: 'bitnami/redis-sentinel:latest'
+    environment:
+      - REDIS_MASTER_HOST=redis
+    depends_on:
+      - redis
+    networks:
+      - redis-replication
+    deploy:
+      mode: replicated
+      replicas: 3
 
   reverse-proxy:
     image: traefik:latest
