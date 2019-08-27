@@ -83,11 +83,9 @@ services:
       replicas: 2
 
   redis-sentinel:
-    image: 'bitnami/redis-sentinel:latest'
-    environment:
-      - REDIS_MASTER_HOST=redis
+    build: ./redis-persistence
     depends_on:
-      - redis
+      - reverse-proxy # run as latest service
     networks:
       - redis-replication
     deploy:

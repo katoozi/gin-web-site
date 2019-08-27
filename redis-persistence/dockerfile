@@ -1,0 +1,5 @@
+FROM redis:latest
+WORKDIR /redis
+COPY sentinel.conf sentinel.conf
+CMD ["redis-server", "/redis/sentinel.conf", "--sentinel"]
+EXPOSE 26379
