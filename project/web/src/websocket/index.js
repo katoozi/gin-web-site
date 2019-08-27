@@ -1,4 +1,6 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 
 // websocket/index.js
 var socket = new ReconnectingWebSocket("ws://127.0.0.1/ws");
@@ -11,7 +13,18 @@ let connect = () => {
   };
 
   socket.onmessage = msg => {
-    console.log("receive msg: ", msg);
+    let data = JSON.parse(msg.data);
+    if(data.action_type === 'RECEIVE_NOTIFICATION'){
+      Swal.fire({
+        position: 'top-end',
+        type: 'success',
+        title: data.text,
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }else{
+      console.log(msg);
+    }
   };
 
   socket.onclose = event => {
