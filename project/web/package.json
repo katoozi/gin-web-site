@@ -11,7 +11,8 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "reconnecting-websocket": "^4.1.10",
-    "redux": "^4.0.4"
+    "redux": "^4.0.4",
+    "sweetalert2": "^8.16.3"
   },
   "scripts": {
     "start": "react-scripts start",
