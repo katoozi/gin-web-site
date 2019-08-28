@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   web-server:
     build: ./project
@@ -19,12 +19,12 @@ services:
       - "traefik.websocket.port=8000" # forward request to port 8000 on container
 
   postgresql:
-    image: 'bitnami/postgresql:11'
+    image: "bitnami/postgresql:11"
     container_name: postgresql-master
     expose:
       - "5432"
     volumes:
-      - 'postgresql_master_data:/bitnami/postgresql'
+      - "postgresql_master_data:/bitnami/postgresql"
     environment:
       - POSTGRESQL_REPLICATION_MODE=master
       - POSTGRESQL_REPLICATION_USER=repl_user
@@ -38,12 +38,12 @@ services:
       - default
 
   postgresql-slave:
-    image: 'bitnami/postgresql:11'
+    image: "bitnami/postgresql:11"
     container_name: postgresql-slave
     expose:
       - "5432"
     volumes:
-      - 'postgresql_slave_data:/bitnami/postgresql'
+      - "postgresql_slave_data:/bitnami/postgresql"
     depends_on:
       - postgresql
     environment:
@@ -64,7 +64,7 @@ services:
     expose:
       - "6379"
     volumes:
-      - 'redis_master_data:/redis'
+      - "redis_master_data:/redis"
     networks:
       - redis-replication
       - default
@@ -74,7 +74,7 @@ services:
     expose:
       - "6379"
     volumes:
-      - 'redis_slave_data:/redis'
+      - "redis_slave_data:/redis"
     command: redis-server --slaveof redis 6379
     depends_on:
       - redis
