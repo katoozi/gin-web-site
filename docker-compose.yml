@@ -71,6 +71,8 @@ services:
 
   redis-slave:
     image: "redis:alpine"
+    expose:
+      - "6379"
     volumes:
       - 'redis_slave_data:/redis'
     command: redis-server --slaveof redis 6379
@@ -78,6 +80,7 @@ services:
       - redis
     networks:
       - redis-replication
+      - default
     deploy:
       mode: replicated
       replicas: 2
@@ -88,6 +91,7 @@ services:
       - reverse-proxy # run as latest service
     networks:
       - redis-replication
+      - default
     deploy:
       mode: replicated
       replicas: 3
