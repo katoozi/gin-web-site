@@ -24,10 +24,19 @@ func runServer(cmd *cobra.Command, args []string) {
 	Init()
 	// connect to redis
 	redisConfig := fetchRedisConfig()
-	redisClient := redis.NewClient(&redis.Options{
-		Addr:     configs.GetAddr(redisConfig),
-		Password: redisConfig.Password,
-		DB:       redisConfig.DB,
+	// basic redis connection
+	// redisClient := redis.NewClient(&redis.Options{
+	// 	Addr:     configs.GetAddr(redisConfig),
+	// 	Password: redisConfig.Password,
+	// 	DB:       redisConfig.DB,
+	// })
+
+	// use redis sentinel for high availability and failover
+	redisClient := redis.NewFailoverClient(&redis.FailoverOptions{
+		MasterName:    "mymaster",
+		SentinelAddrs: []string{"172.20.0.7:26379", "172.19.0.11:26379", "172.19.0.10:26379"},
+		Password:      redisConfig.Password,
+		DB:            redisConfig.DB,
 	})
 	_, err := redisClient.Ping().Result()
 	if err != nil {
