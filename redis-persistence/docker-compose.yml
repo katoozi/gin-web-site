@@ -1,0 +1,50 @@
+version: "3.7"
+services:
+  redis:
+    image: "redis:alpine"
+    container_name: redis-master
+    restart: always
+    expose:
+      - "6379"
+    volumes:
+      - "redis_master_data:/redis"
+    networks:
+      - redis-replication
+      - default
+
+  redis-slave:
+    image: "redis:alpine"
+    expose:
+      - "6379"
+    volumes:
+      - "redis_slave_data:/redis"
+    command: redis-server --slaveof redis 6379
+    depends_on:
+      - redis
+    networks:
+      - redis-replication
+      - default
+    deploy:
+      mode: global
+
+  redis-sentinel:
+    build: ./
+    depends_on:
+      - redis
+      - redis-slave
+    networks:
+      - redis-replication
+      - default
+    deploy:
+      mode: replicated
+      replicas: 3
+
+networks:
+  redis-replication:
+    driver: bridge
+
+volumes:
+  redis_master_data:
+    driver: local
+  redis_slave_data:
+    driver: local

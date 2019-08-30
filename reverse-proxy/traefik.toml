@@ -1,0 +1,28 @@
+#  labels:
+#       - "traefik.basic.frontend.rule=Host:localhost"
+#       - "traefik.basic.port=8000"
+#       - "traefik.websocket.frontend.rule=Host:127.0.0.1"
+#       - "traefik.websocket.port=8000" # forward request to port 8000 on container
+defaultEntryPoints = ["http"]
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+
+[acme]
+email = "test@traefik.io"
+storage = "traefik/acme/account"
+caServer = "127.0.0.1"
+entryPoint = "http"
+
+[acme.httpChallenge]
+    entryPoint = "http"
+
+[[acme.domains]]
+  main = "localhost"
+  sans = ["localhost"]
+
+[consul]
+  endpoint = "web-server:8000"
+  watch = true
+  prefix = "traefik"
