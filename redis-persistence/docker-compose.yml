@@ -37,7 +37,7 @@ services:
       - redis-replication
       - default
     volumes:
-      - ./sentinel.conf:/etc/sentinel.conf
+      - ../redis-persistence/sentinel.conf:/etc/sentinel.conf
     deploy:
       mode: replicated
       replicas: 3
