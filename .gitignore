@@ -45,3 +45,6 @@ postgres/data/
 # docker stack file
 docker-stack.yml
 docker-compose.yml
+
+# env files
+*.env

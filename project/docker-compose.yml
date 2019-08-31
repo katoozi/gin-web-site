@@ -8,3 +8,5 @@ services:
     deploy:
       mode: replicated
       replicas: 3
+    env_file:
+     - ../project/.env

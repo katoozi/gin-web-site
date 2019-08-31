@@ -3,6 +3,8 @@ package commands
 import (
 	"fmt"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
@@ -32,9 +34,11 @@ func runServer(cmd *cobra.Command, args []string) {
 	// })
 
 	// use redis sentinel for high availability and failover
+	addrs := os.Getenv("REDIS_SENTINEL_INSTANCES")
+	sentinelAddrs := strings.Split(addrs, ",")
 	redisClient := redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:    "mymaster",
-		SentinelAddrs: []string{"172.20.0.7:26379", "172.19.0.11:26379", "172.19.0.10:26379"},
+		SentinelAddrs: sentinelAddrs,
 		Password:      redisConfig.Password,
 		DB:            redisConfig.DB,
 	})
