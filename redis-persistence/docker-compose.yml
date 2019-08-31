@@ -28,13 +28,16 @@ services:
       mode: global
 
   redis-sentinel:
-    build: ./
+    image: "redis:alpine"
+    command: redis-server /etc/sentinel.conf --sentinel
     depends_on:
       - redis
       - redis-slave
     networks:
       - redis-replication
       - default
+    volumes:
+      - ./sentinel.conf:/etc/sentinel.conf
     deploy:
       mode: replicated
       replicas: 3
