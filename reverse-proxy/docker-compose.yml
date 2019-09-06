@@ -3,9 +3,9 @@ services:
   reverse-proxy:
     image: traefik:latest
     command: --api --docker
-    # ports:
-    # - "80:80"
-    # - "8080:8080"
+    ports:
+      - "80:80"
+      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ../reverse-proxy/traefik.toml:/etc/traefik/traefik.toml
