@@ -5,24 +5,29 @@
 #       - "traefik.websocket.port=8000" # forward request to port 8000 on container
 defaultEntryPoints = ["http"]
 
-[entryPoints]
-  [entryPoints.http]
-  address = ":80"
+[auth_api]
+dashboard = true
+entrypoint = "auth_api"
 
-[acme]
-email = "test@traefik.io"
-storage = "traefik/acme/account"
-caServer = "127.0.0.1"
-entryPoint = "http"
+[web]
+entrypoint = "web"
 
-[acme.httpChallenge]
-    entryPoint = "http"
+# websockets protocol
+[wss]
+protocol = "http"
 
-[[acme.domains]]
-  main = "localhost"
-  sans = ["localhost"]
+# the port on localhost where traefik accepts http requests
+[entryPoints.http]
+address = "web-server:80"
+port = "8000"
 
-[consul]
-  endpoint = "web-server:8000"
-  watch = true
-  prefix = "traefik"
+# the port on localhost where the traefik api and dashboard can be found
+[entryPoints.auth_api]
+address = ":8089"
+
+[entryPoints.web]
+address = ":80"
+
+# authenticate the traefik api entrypoint
+[entryPoints.auth_api.auth.basic]
+users = [ "api_admin:$apr1$eS/j3kum$q/X2khsIEG/bBGsteP.x./",]
