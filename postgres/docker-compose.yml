@@ -18,7 +18,7 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
       - postgres-replication
-      - default
+      - project
 
   postgresql-slave:
     image: "bitnami/postgresql:11"
@@ -43,6 +43,8 @@ services:
 networks:
   postgres-replication:
     driver: bridge
+  project:
+    external: true
 
 volumes:
   postgresql_master_data:

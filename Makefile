@@ -9,6 +9,7 @@ help:
 	@echo "    make log                   show special service logs => make service=web-server log"
 	@echo "    make deploy                deploy the stack   => make stack_name=postgres stack_file=postgres/docker-stack.yml deploy"
 	@echo "    make rebuild               rebuild service(s) => make services='postgres web-server redis' rebuild"
+	@echo "    make initial-network       create project network in docker"
 
 build:
 	docker-compose --compatibility -f postgres/docker-compose.yml -f redis-persistence/docker-compose.yml -f project/docker-compose.yml -f reverse-proxy/docker-compose.yml config > docker-compose.yml
@@ -30,3 +31,6 @@ down:
 
 deploy:
 	docker stack deploy -c ${stack_file} ${stack_name}
+
+initial-network:
+	docker network create project

@@ -9,3 +9,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ../reverse-proxy/traefik.toml:/etc/traefik/traefik.toml
+    networks:
+      - project
+
+networks:
+  project:
+    external: true

@@ -10,7 +10,7 @@ services:
       - "redis_master_data:/redis"
     networks:
       - redis-replication
-      - default
+      - project
 
   redis-slave:
     image: "redis:alpine"
@@ -23,7 +23,7 @@ services:
       - redis
     networks:
       - redis-replication
-      - default
+      - project
     deploy:
       mode: global
 
@@ -35,7 +35,7 @@ services:
       - redis-slave
     networks:
       - redis-replication
-      - default
+      - project
     volumes:
       - ../redis-persistence/sentinel.conf:/etc/sentinel.conf
     deploy:
@@ -45,6 +45,8 @@ services:
 networks:
   redis-replication:
     driver: bridge
+  project:
+    external: true
 
 volumes:
   redis_master_data:
