@@ -9,4 +9,9 @@ services:
       mode: replicated
       replicas: 3
     env_file:
-     - ../project/.env
+      - ../project/.env
+    labels:
+      - "traefik.basic.frontend.rule=Host:localhost"
+      - "traefik.basic.port=8000"
+      - "traefik.websocket.frontend.rule=Host:127.0.0.1"
+      - "traefik.websocket.port=8000" # forward request to port 8000 on container

@@ -1,33 +1,33 @@
-#  labels:
-#       - "traefik.basic.frontend.rule=Host:localhost"
-#       - "traefik.basic.port=8000"
-#       - "traefik.websocket.frontend.rule=Host:127.0.0.1"
-#       - "traefik.websocket.port=8000" # forward request to port 8000 on container
-defaultEntryPoints = ["http"]
+# #  labels:
+# #       - "traefik.basic.frontend.rule=Host:localhost"
+# #       - "traefik.basic.port=8000"
+# #       - "traefik.websocket.frontend.rule=Host:127.0.0.1"
+# #       - "traefik.websocket.port=8000" # forward request to port 8000 on container
+# defaultEntryPoints = ["http"]
 
-[auth_api]
-dashboard = true
-entrypoint = "auth_api"
+# [auth_api]
+# dashboard = true
+# entrypoint = "auth_api"
 
-[web]
-entrypoint = "web"
+# [web]
+# entrypoint = "web"
 
-# websockets protocol
-[wss]
-protocol = "http"
+# # websockets protocol
+# [wss]
+# protocol = "http"
 
-# the port on localhost where traefik accepts http requests
-[entryPoints.http]
-address = "web-server:80"
-port = "8000"
+# # the port on localhost where traefik accepts http requests
+# [entryPoints.http]
+# address = "web-server:80"
+# port = "8000"
 
-# the port on localhost where the traefik api and dashboard can be found
-[entryPoints.auth_api]
-address = ":8089"
+# # the port on localhost where the traefik api and dashboard can be found
+# [entryPoints.auth_api]
+# address = ":8089"
 
-[entryPoints.web]
-address = ":80"
+# [entryPoints.web]
+# address = ":80"
 
-# authenticate the traefik api entrypoint
-[entryPoints.auth_api.auth.basic]
-users = [ "api_admin:$apr1$eS/j3kum$q/X2khsIEG/bBGsteP.x./",]
+# # authenticate the traefik api entrypoint
+# [entryPoints.auth_api.auth.basic]
+# users = [ "api_admin:$apr1$eS/j3kum$q/X2khsIEG/bBGsteP.x./",]
