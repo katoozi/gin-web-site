@@ -17,7 +17,6 @@ services:
       - POSTGRESQL_DATABASE=mydb
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
-      - postgres-replication
       - project
 
   postgresql-slave:
@@ -38,11 +37,9 @@ services:
       - POSTGRESQL_MASTER_PORT_NUMBER=5432
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
-      - postgres-replication
+      - project
 
 networks:
-  postgres-replication:
-    driver: bridge
   project:
     external: true
 

@@ -9,7 +9,6 @@ services:
     volumes:
       - "redis_master_data:/redis"
     networks:
-      - redis-replication
       - project
 
   redis-slave:
@@ -22,7 +21,6 @@ services:
     depends_on:
       - redis
     networks:
-      - redis-replication
       - project
     deploy:
       mode: global
@@ -34,8 +32,9 @@ services:
       - redis
       - redis-slave
     networks:
-      - redis-replication
-      - project
+      project:
+        aliases:
+          - redis-sen
     volumes:
       - ../redis-persistence/sentinel.conf:/etc/sentinel.conf
     deploy:
@@ -43,8 +42,6 @@ services:
       replicas: 3
 
 networks:
-  redis-replication:
-    driver: bridge
   project:
     external: true
 
