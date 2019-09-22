@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-sentinel
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      role: sentinel
+      tier: backend
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: sentinel
+        tier: backend
+    spec:
+      containers:
+        - name: sentinel
+          image: redis:alpine
+          command: ["redis-server"]
+          args: ["/redis-sentinel/sentinel.conf", "--sentinel"]
+          ports:
+            - containerPort: 6379
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - mountPath: /redis-sentinel
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: redis-sentinel-config
+            items:
+              - key: sentinel.conf
+                path: sentinel.conf

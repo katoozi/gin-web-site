@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-slave
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      role: slave
+      tier: backend
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: slave
+        tier: backend
+    spec:
+      containers:
+        - name: slave
+          image: redis:alpine
+          command: ["redis-server"]
+          args: ["--slaveof", "redis-master", "6379"]
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: redis-storage-slaves
+              mountPath: /data/redis
+      volumes:
+        - name: redis-storage-slaves
+          emptyDir: {}
