@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/katoozi/gin-web-site/configs"
 	"github.com/katoozi/gin-web-site/internal/app/website"
 	"github.com/katoozi/gin-web-site/internal/pkg/auth"
 	"github.com/spf13/viper"
@@ -27,12 +26,6 @@ func Init() {
 	website.DbCon = db
 }
 
-func fetchServerConfig() *configs.ServerConfig {
-	serverConfig := &configs.ServerConfig{}
-	viper.UnmarshalKey("server", &serverConfig)
-	return serverConfig
-}
-
 func fetchDatabaseConfig() string {
 	host := viper.GetString("database.host")
 	port := viper.GetString("database.port")
@@ -47,10 +40,4 @@ func fetchDatabaseConfig() string {
 		pass,
 	)
 
-}
-
-func fetchRedisConfig() *configs.RedisConfig {
-	redisConfig := &configs.RedisConfig{}
-	viper.UnmarshalKey("redis", &redisConfig)
-	return redisConfig
 }
