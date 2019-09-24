@@ -6,3 +6,8 @@ web/README.md
 web/yarn.lock
 .vscode
 .env
+kubernetes/
+README.md
+docker-compose.yml
+dockerfile
+.dockerignore
