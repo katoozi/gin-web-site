@@ -19,7 +19,7 @@ var DbCon *sqlx.DB
 var RedisCon *redis.Client
 
 // RabbitMQCon is the rabbitmq connection
-var RabbitMQCon *amqp.Connection
+var RabbitMQCon *amqp.Channel
 
 func homeHandler(c *gin.Context) {
 	usersData := []auth.User{}

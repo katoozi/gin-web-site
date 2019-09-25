@@ -1,7 +1,8 @@
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
+let hostname = window.location.hostname + ":" + window.location.port;
 // websocket/index.js
-var socket = new ReconnectingWebSocket("ws://127.0.0.1/ws");
+var socket = new ReconnectingWebSocket("ws://" + hostname + "/ws");
 
 let connect = () => {
   console.log("Attempting Connection...");
@@ -34,4 +35,8 @@ let closeSocket = (code, msg) => {
   socket.close(code, msg);
 }
 
-export { connect, sendMsg, closeSocket };
+export {
+  connect,
+  sendMsg,
+  closeSocket
+};
