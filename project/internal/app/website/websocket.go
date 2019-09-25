@@ -44,6 +44,11 @@ func (ch *Channel) writer() {
 	}
 }
 
+func (ch *Channel) receiveNotification() {
+	log.Println("receive notification called!!!")
+
+}
+
 // NewChannel is the Channel factorty function
 func NewChannel(conn *websocket.Conn) *Channel {
 	c := &Channel{
@@ -53,6 +58,48 @@ func NewChannel(conn *websocket.Conn) *Channel {
 
 	go c.reader()
 	go c.writer()
+
+	q, err := RabbitMQCon.QueueDeclare(
+		"hello",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Printf("Failed to open queue, %v\n", err)
+	}
+	err = RabbitMQCon.Qos(
+		1,     // prefetch count
+		0,     // prefetch size
+		false, // global
+	)
+	if err != nil {
+		log.Println("Failed to set Qos")
+	}
+
+	msgs, err := RabbitMQCon.Consume(
+		q.Name,
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Printf("Failed to register consumer: %v\n", err)
+	}
+
+	go func() {
+		for d := range msgs {
+			log.Printf("Received a message: %s\n", d.Body)
+			pkt := readPacket(d.Body, 1)
+			c.send <- *pkt
+			d.Ack(false)
+		}
+	}()
 
 	return c
 }
