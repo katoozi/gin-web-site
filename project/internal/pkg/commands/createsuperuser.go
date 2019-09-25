@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/fatih/color"
+	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/internal/pkg/auth"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
@@ -21,7 +22,7 @@ var CreateSuperUserCommand = &cobra.Command{
 
 // CreateSuperuser will create user with superuser permission in user table
 func createSuperuser(cmd *cobra.Command, args []string) {
-	Init()
+	dbCon := initialPostgres()
 	var (
 		username    string
 		pass        string
@@ -31,7 +32,7 @@ func createSuperuser(cmd *cobra.Command, args []string) {
 	for {
 		fmt.Print("Username: ")
 		username, _ = reader.ReadString('\n')
-		if checkUsername(username) {
+		if checkUsername(dbCon, username) {
 			break
 		} else {
 			color.Red("User with this username already exists")
@@ -69,7 +70,7 @@ func createSuperuser(cmd *cobra.Command, args []string) {
 
 }
 
-func checkUsername(username string) bool {
+func checkUsername(dbCon *sqlx.DB, username string) bool {
 	err := auth.GetUser(username, dbCon)
 	if err == nil {
 		return true

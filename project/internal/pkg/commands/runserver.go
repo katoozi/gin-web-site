@@ -2,11 +2,7 @@ package commands
 
 import (
 	"fmt"
-	"log"
-	"strings"
 
-	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis"
 	"github.com/katoozi/gin-web-site/internal/app/website"
 
 	"github.com/spf13/cobra"
@@ -22,37 +18,13 @@ var RunServerCommand = &cobra.Command{
 }
 
 func runServer(cmd *cobra.Command, args []string) {
-	Init()
+	// connect to postgresql
+	psDB := initialPostgres()
 
-	// use redis sentinel for high availability and failover
-	addrs := viper.GetString("redis.sentinels")
-	db := viper.GetInt("redis.db")
-	pass := viper.GetString("redis.pass")
+	// connect to redis
+	redisClient := initialRedis()
 
-	sentinelAddrs := strings.Split(addrs, ",")
-	redisClient := redis.NewFailoverClient(&redis.FailoverOptions{
-		MasterName:    "mymaster",
-		SentinelAddrs: sentinelAddrs,
-		Password:      pass,
-		DB:            db,
-	})
-	_, err := redisClient.Ping().Result()
-	if err != nil {
-		log.Fatalf("Error while connect to redis: %v\n", err)
-	}
-	website.RedisCon = redisClient
-
-	// load static files, templates, register routers. start server
-	r := gin.Default()
-	r.Static("/static", "./web/build/static")
-	r.StaticFile("/manifest.json", "./web/build/manifest.json")
-
-	website.RegisterTemplateFuncs(r)
-
-	// load html files
-	r.LoadHTMLGlob("./web/build/*.html")
-
-	website.RegisterRoutes(r)
+	r := website.Initial(redisClient, psDB)
 
 	host := viper.GetString("server.host")
 	port := viper.GetString("server.port")
