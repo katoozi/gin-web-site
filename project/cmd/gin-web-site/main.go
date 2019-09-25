@@ -18,6 +18,7 @@ func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	// config the viper
+	// only read from environmet variables
 	viper.SetConfigName("config")
 	viper.SetEnvPrefix("test_project")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))

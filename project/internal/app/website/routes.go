@@ -9,9 +9,12 @@ import (
 	"github.com/katoozi/gin-web-site/pkg/templatefuncs"
 )
 
-// Initial will config the package
+// Initial will set the redis and postgres connections, register all routes, load templates,
+// enable middleswares, upgrade connection to websocket and ...
 func Initial(redis *redis.Client, postgres *sqlx.DB) *gin.Engine {
 	r := gin.Default()
+
+	// serve static files
 	r.Static("/static", "./web/build/static")
 	r.StaticFile("/manifest.json", "./web/build/manifest.json")
 
@@ -34,9 +37,11 @@ func Initial(redis *redis.Client, postgres *sqlx.DB) *gin.Engine {
 	})
 
 	authorized := r.Group("/user")
+	// enable AuthMiddleware for /read endpoint
 	authorized.Use(AuthRequired())
 	{
 		authorized.GET("/read", testFunc)
 	}
+
 	return r
 }
