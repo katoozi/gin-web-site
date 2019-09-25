@@ -9,6 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/internal/pkg/auth"
 	"github.com/spf13/viper"
+	"github.com/streadway/amqp"
 
 	_ "github.com/lib/pq" // register postgresql driver
 )
@@ -56,4 +57,22 @@ func initialRedis() *redis.Client {
 		log.Fatalf("Error while connect to redis: %v\n", err)
 	}
 	return redisClient
+}
+
+func initialRabbitmq() *amqp.Connection {
+	// get rabbitmq configuration variables
+	rabbitUser := viper.GetString("rabbitmq.user")
+	rabbitPass := viper.GetString("rabbitmq.pass")
+	rabbitHost := viper.GetString("rabbitmq.host")
+	rabbitPort := viper.GetString("rabbitmq.port")
+
+	// generate server address
+	rabbitMQServer := fmt.Sprintf("amqp://%s:%s@%s:%s/", rabbitUser, rabbitPass, rabbitHost, rabbitPort)
+
+	conn, err := amqp.Dial(rabbitMQServer)
+	if err != nil {
+		log.Fatalf("Failed to open rabbitmq connection. %s", err)
+	}
+
+	return conn
 }

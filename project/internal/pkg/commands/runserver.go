@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/katoozi/gin-web-site/internal/app/website"
 
@@ -20,11 +21,22 @@ var RunServerCommand = &cobra.Command{
 func runServer(cmd *cobra.Command, args []string) {
 	// connect to postgresql
 	psDB := initialPostgres()
+	defer psDB.Close()
 
 	// connect to redis
 	redisClient := initialRedis()
+	defer redisClient.Close()
 
-	r := website.Initial(redisClient, psDB)
+	// initial rabbitMQ
+	rabbitClient := initialRabbitmq()
+	rabbitCh, err := rabbitClient.Channel()
+	if err != nil {
+		log.Fatalf("Failed to open channel, %v", err)
+	}
+	defer rabbitCh.Close()
+	defer rabbitClient.Close()
+
+	r := website.Initial(redisClient, psDB, rabbitCh)
 
 	host := viper.GetString("server.host")
 	port := viper.GetString("server.port")

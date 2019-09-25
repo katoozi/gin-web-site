@@ -9,6 +9,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/jmoiron/sqlx"
 	"github.com/katoozi/gin-web-site/internal/pkg/auth"
+	"github.com/streadway/amqp"
 )
 
 // DbCon is the sqlx db connection
@@ -16,6 +17,9 @@ var DbCon *sqlx.DB
 
 // RedisCon connection
 var RedisCon *redis.Client
+
+// RabbitMQCon is the rabbitmq connection
+var RabbitMQCon *amqp.Connection
 
 func homeHandler(c *gin.Context) {
 	usersData := []auth.User{}
