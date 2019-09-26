@@ -1,8 +1,12 @@
 package commands
 
 import (
-	"fmt"
+	"context"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/katoozi/gin-web-site/internal/app/website"
 
@@ -21,11 +25,9 @@ var RunServerCommand = &cobra.Command{
 func runServer(cmd *cobra.Command, args []string) {
 	// connect to postgresql
 	psDB := initialPostgres()
-	defer psDB.Close()
 
 	// connect to redis
 	redisClient := initialRedis()
-	defer redisClient.Close()
 
 	// initial rabbitMQ
 	rabbitClient := initialRabbitmq()
@@ -33,9 +35,8 @@ func runServer(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatalf("Failed to open channel, %v", err)
 	}
-	defer rabbitCh.Close()
-	defer rabbitClient.Close()
 
+	// initial website package
 	r := website.Initial(redisClient, psDB, rabbitCh)
 
 	host := viper.GetString("server.host")
@@ -43,6 +44,32 @@ func runServer(cmd *cobra.Command, args []string) {
 	if port == "" {
 		port = "8000"
 	}
-	r.Run(host + ":" + port)
-	fmt.Println("Start Listning...")
+	r.Addr = host + ":" + port
+
+	// create channel for shutdown server gracefully
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, os.Interrupt, os.Kill)
+	go func() {
+		r.ListenAndServe()
+	}()
+	log.Println("Start Listning...")
+	sig := <-sigs
+	log.Println("Signal: ", sig)
+
+	log.Println("Stopping Gin Server...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := r.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown:", err)
+	}
+
+	log.Println("Closing Postgres Connection...")
+	psDB.Close()
+
+	log.Println("Closing Redis Connection...")
+	redisClient.Close()
+
+	log.Println("Closing RabbitMQ Connection...")
+	rabbitCh.Close()
+	rabbitClient.Close()
 }

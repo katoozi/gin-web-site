@@ -2,6 +2,7 @@ package website
 
 import (
 	"html/template"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
@@ -12,7 +13,7 @@ import (
 
 // Initial will set the redis and postgres connections, register all routes, load templates,
 // enable middleswares, upgrade connection to websocket and ...
-func Initial(redis *redis.Client, postgres *sqlx.DB, rabbitmq *amqp.Channel) *gin.Engine {
+func Initial(redis *redis.Client, postgres *sqlx.DB, rabbitmq *amqp.Channel) *http.Server {
 	// set the connections
 	RedisCon = redis
 	DbCon = postgres
@@ -50,5 +51,8 @@ func Initial(redis *redis.Client, postgres *sqlx.DB, rabbitmq *amqp.Channel) *gi
 		authorized.GET("/read", testFunc)
 	}
 
-	return r
+	srv := &http.Server{
+		Handler: r,
+	}
+	return srv
 }
