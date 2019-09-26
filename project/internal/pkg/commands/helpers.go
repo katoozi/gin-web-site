@@ -18,13 +18,14 @@ import (
 func initialPostgres() *sqlx.DB {
 	// generate the postgres connect address
 	host := viper.GetString("database.host")
-	port := viper.GetString("database.port")
+	port := viper.GetInt("database.port")
 	user := viper.GetString("database.user")
 	pass := viper.GetString("database.pass")
 	dbName := viper.GetString("database.db.name")
 	dataSourceName := fmt.Sprintf(
-		"host=%s user=%s dbname=%s password=%s sslmode=disable",
-		host+":"+port,
+		"host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
+		host,
+		port,
 		user,
 		dbName,
 		pass,
