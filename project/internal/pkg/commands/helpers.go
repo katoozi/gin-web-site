@@ -41,24 +41,48 @@ func initialPostgres() *sqlx.DB {
 }
 
 func initialRedis() *redis.Client {
-	// use redis sentinel for high availability and failover
-	redisAddrs := viper.GetString("redis.sentinels")
-	redisMasterName := viper.GetString("redis.master.name")
+	// redis required env variables
 	redisDB := viper.GetInt("redis.db")
 	redisPass := viper.GetString("redis.pass")
 
-	sentinelAddrs := strings.Split(redisAddrs, ",")
-	redisClient := redis.NewFailoverClient(&redis.FailoverOptions{
-		MasterName:    redisMasterName,
-		SentinelAddrs: sentinelAddrs,
-		Password:      redisPass,
-		DB:            redisDB,
-	})
-	_, err := redisClient.Ping().Result()
-	if err != nil {
-		log.Fatalf("Error while connect to redis: %v\n", err)
+	// determine redis connection type
+	redisConfig := viper.GetString("redis.type")
+	if redisConfig == "sentinel" {
+		// use redis sentinel for high availability and failover
+		redisAddrs := viper.GetString("redis.sentinels")
+		redisMasterName := viper.GetString("redis.sentinels.master.name")
+
+		sentinelAddrs := strings.Split(redisAddrs, ",")
+		client := redis.NewFailoverClient(&redis.FailoverOptions{
+			MasterName:    redisMasterName,
+			SentinelAddrs: sentinelAddrs,
+			Password:      redisPass,
+			DB:            redisDB,
+		})
+		_, err := client.Ping().Result()
+		if err != nil {
+			log.Fatalf("Error while connect to redis sentinel: %v\n", err)
+		}
+		return client
+
+	} else if redisConfig == "simple" {
+		// config package for using single redis instance without sentinel or cluster capability
+		redisHost := viper.GetString("redis.host")
+		redisPort := viper.GetString("redis.port")
+		client := redis.NewClient(&redis.Options{
+			Addr:     redisHost + ":" + redisPort,
+			Password: redisPass,
+			DB:       redisDB,
+		})
+		_, err := client.Ping().Result()
+		if err != nil {
+			log.Fatalf("Error while connect to redis: %v\n", err)
+		}
+		return client
 	}
-	return redisClient
+
+	log.Fatalf("redis configuration type not found!!!. set the TEST_PROJECT_REDIS_TYPE variable")
+	return nil
 }
 
 func initialRabbitmq() *amqp.Connection {
