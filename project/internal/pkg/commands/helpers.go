@@ -43,12 +43,13 @@ func initialPostgres() *sqlx.DB {
 func initialRedis() *redis.Client {
 	// use redis sentinel for high availability and failover
 	redisAddrs := viper.GetString("redis.sentinels")
+	redisMasterName := viper.GetString("redis.master.name")
 	redisDB := viper.GetInt("redis.db")
 	redisPass := viper.GetString("redis.pass")
 
 	sentinelAddrs := strings.Split(redisAddrs, ",")
 	redisClient := redis.NewFailoverClient(&redis.FailoverOptions{
-		MasterName:    "mymaster",
+		MasterName:    redisMasterName,
 		SentinelAddrs: sentinelAddrs,
 		Password:      redisPass,
 		DB:            redisDB,
