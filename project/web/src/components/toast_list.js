@@ -7,9 +7,7 @@ class ToastList extends React.Component {
   render() {
     const { notifications } = this.props;
     let notifications_list = notifications.map((notification, index) => (
-      <ListGroup.Item key={index}>
-        {notification.text}
-      </ListGroup.Item>
+      <ListGroup.Item key={index}>{notification.text}</ListGroup.Item>
     ));
     return <ListGroup>{notifications_list}</ListGroup>;
   }

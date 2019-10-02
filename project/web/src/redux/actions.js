@@ -1,4 +1,4 @@
-import {RECEIVE_NOTIFICATION, DELETE_NOTIFICATION} from "./actionTypes";
+import { RECEIVE_NOTIFICATION, DELETE_NOTIFICATION } from "./actionTypes";
 
 export function addNotification(data) {
   return {

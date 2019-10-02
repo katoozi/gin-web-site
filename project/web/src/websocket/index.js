@@ -1,7 +1,6 @@
-import ReconnectingWebSocket from 'reconnecting-websocket';
+import ReconnectingWebSocket from "reconnecting-websocket";
 
 let hostname = window.location.hostname + ":" + window.location.port;
-// websocket/index.js
 var socket = new ReconnectingWebSocket("ws://" + hostname + "/ws");
 
 let connect = () => {
@@ -26,17 +25,11 @@ let connect = () => {
 
 let sendMsg = msg => {
   console.log("sending msg: ", msg);
-  socket.send(
-    JSON.stringify(msg)
-  );
+  socket.send(JSON.stringify(msg));
 };
 
 let closeSocket = (code, msg) => {
   socket.close(code, msg);
-}
-
-export {
-  connect,
-  sendMsg,
-  closeSocket
 };
+
+export { connect, sendMsg, closeSocket };

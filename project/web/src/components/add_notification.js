@@ -26,7 +26,7 @@ class AddNotification extends React.Component {
     let value = this.state.message_input_text;
     let msg = {
       text: value,
-      action_type: 'RECEIVE_NOTIFICATION'
+      action_type: "RECEIVE_NOTIFICATION"
     };
     sendMsg(msg);
     this.props.dispatch(addNotification(msg));
@@ -42,7 +42,7 @@ class AddNotification extends React.Component {
     closeSocket(1000, "close by user");
     this.setState({
       input_state: true
-    })
+    });
   }
 
   messageHandler(input_obj) {
@@ -76,11 +76,7 @@ class AddNotification extends React.Component {
             Hit
           </Button>
           &nbsp;
-          <Button
-            variant="outline-primary"
-            onClick={this.delete}
-            value="Hit"
-          >
+          <Button variant="outline-primary" onClick={this.delete} value="Hit">
             Delete
           </Button>
           &nbsp;

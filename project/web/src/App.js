@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  NavLink
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
 import { Container, Nav } from "react-bootstrap";
 import { connect } from "./websocket";
 import AddNotification from "./components/add_notification";
@@ -17,8 +13,7 @@ function Users() {
 }
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  componentDidMount() {
     connect();
   }
 
