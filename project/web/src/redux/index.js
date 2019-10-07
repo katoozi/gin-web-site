@@ -6,7 +6,9 @@ import rootSagas from "./sagas";
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
-const rootReducer = combineReducers(reducers);
+const rootReducer = combineReducers({
+  notification: reducers.notificationReducer
+});
 
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
 
