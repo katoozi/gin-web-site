@@ -1,4 +1,5 @@
 import ReconnectingWebSocket from "reconnecting-websocket";
+import store, { addNotification } from "../redux/";
 
 let hostname = window.location.hostname + ":" + window.location.port;
 var socket = new ReconnectingWebSocket("ws://" + hostname + "/ws");
@@ -12,6 +13,7 @@ let connect = () => {
 
   socket.onmessage = msg => {
     console.log("receive msg: ", msg);
+    store.dispatch(addNotification(msg));
   };
 
   socket.onclose = event => {
@@ -23,12 +25,17 @@ let connect = () => {
   };
 };
 
-let sendMsg = msg => {
-  console.log("sending msg: ", msg);
-  socket.send(JSON.stringify(msg));
+const sendMsg = async msg => {
+  try {
+    socket.send(JSON.stringify(msg));
+    return msg;
+  } catch (e) {
+    // eslint-disable-next-line no-throw-literal
+    throw "There is an error. Try again later!!!";
+  }
 };
 
-let closeSocket = (code, msg) => {
+const closeSocket = async (code, msg) => {
   socket.close(code, msg);
 };
 

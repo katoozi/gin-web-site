@@ -16,8 +16,7 @@ class ToastList extends React.Component {
 ToastList.propTypes = {
   notifications: PropTypes.arrayOf(
     PropTypes.shape({
-      text: PropTypes.string.isRequired,
-      action_type: PropTypes.string.isRequired
+      text: PropTypes.string.isRequired
     })
   ).isRequired
 };

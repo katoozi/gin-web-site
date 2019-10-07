@@ -6,9 +6,13 @@ import {
   ButtonToolbar
 } from "react-bootstrap";
 import ToastList from "./toast_list";
-import { sendMsg, closeSocket } from "../websocket";
-import { addNotification, deleteNotification } from "../redux/actions";
+// import { sendMsg, closeSocket } from "../websocket";
+import {
+  deleteNotification,
+  sendNotificationRequested
+} from "../redux/actions";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 class AddNotification extends React.Component {
   state = {
@@ -28,18 +32,17 @@ class AddNotification extends React.Component {
       text: value,
       action_type: "RECEIVE_NOTIFICATION"
     };
-    sendMsg(msg);
-    this.props.dispatch(addNotification(msg));
+    this.props.sendNotificationRequested(msg);
   }
 
   delete() {
     let value = this.state.message_input_text;
-    this.props.dispatch(deleteNotification(value));
+    this.props.deleteNotification(value);
   }
 
   close() {
     console.log("Close Socket");
-    closeSocket(1000, "close by user");
+    // closeSocket(1000, "close by user");
     this.setState({
       input_state: true
     });
@@ -91,6 +94,19 @@ class AddNotification extends React.Component {
   }
 }
 
-AddNotification = connect()(AddNotification);
+let mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      deleteNotification,
+      sendNotificationRequested
+    },
+    dispatch
+  );
+};
+
+AddNotification = connect(
+  null,
+  mapDispatchToProps
+)(AddNotification);
 
 export default AddNotification;
