@@ -7,17 +7,14 @@ const initialState = {
 export function notificationReducer(state = initialState, action) {
   switch (action.type) {
     case RECEIVE_NOTIFICATION:
-      return Object.assign({}, state, {
-        notifications: [...state.notifications, action]
-      });
+      return { ...state, notifications: [...state.notifications, action] };
     case DELETE_NOTIFICATION:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         notifications: [
-          ...state.notifications.filter(
-            notification => notification.text !== action.text
-          )
+          ...state.notifications.filter(notifi => notifi.text !== action.text)
         ]
-      });
+      };
     default:
       return state;
   }

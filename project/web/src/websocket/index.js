@@ -1,5 +1,6 @@
 import ReconnectingWebSocket from "reconnecting-websocket";
 import store, { addNotification } from "../redux/";
+import MsgException from "./exception";
 
 let hostname = window.location.hostname + ":" + window.location.port;
 var socket = new ReconnectingWebSocket("ws://" + hostname + "/ws");
@@ -38,7 +39,7 @@ const sendMsg = async msg => {
     socket.send(JSON.stringify(msg));
     return msg;
   } catch (e) {
-    throw new Error("There is an error. Try again later!!!");
+    throw new MsgException("There is an error. Try again later!!!");
   }
 };
 
@@ -47,3 +48,4 @@ const closeSocket = async (code, msg) => {
 };
 
 export { connect, sendMsg, closeSocket };
+export { default as MsgException } from "./exception";
