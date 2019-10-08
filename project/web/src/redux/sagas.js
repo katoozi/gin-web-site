@@ -11,7 +11,7 @@ function* sendMessage(action) {
     const msg = yield call(sendMsg, action.text.text);
     yield put({ type: RECEIVE_NOTIFICATION, text: msg });
   } catch (e) {
-    yield put({ type: SEND_NOTIFICATION_FAILED, text: e });
+    yield put({ type: SEND_NOTIFICATION_FAILED, text: e.message });
   }
 }
 

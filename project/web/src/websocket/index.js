@@ -26,12 +26,19 @@ let connect = () => {
 };
 
 const sendMsg = async msg => {
+  // const api = await fetch("https://httpbin.org/json");
+  // try {
+  //   const json = await api.json();
+  //   console.log(json);
+  // } catch (e) {
+  //   console.log(e);
+  //   throw new Error("download from google");
+  // }
   try {
     socket.send(JSON.stringify(msg));
     return msg;
   } catch (e) {
-    // eslint-disable-next-line no-throw-literal
-    throw "There is an error. Try again later!!!";
+    throw new Error("There is an error. Try again later!!!");
   }
 };
 
