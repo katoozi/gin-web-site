@@ -33,7 +33,7 @@ const sendMsg = async msg => {
   //   console.log(json);
   // } catch (e) {
   //   console.log(e);
-  //   throw new Error("download from google");
+  //   throw new Error("we have error");
   // }
   try {
     socket.send(JSON.stringify(msg));
