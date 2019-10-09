@@ -6,7 +6,6 @@ import {
   ButtonToolbar
 } from "react-bootstrap";
 import ToastList from "./toast_list";
-// import { sendMsg, closeSocket } from "../websocket";
 import {
   deleteNotification,
   sendNotificationRequested
@@ -15,12 +14,12 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 class AddNotification extends React.Component {
-  state = {
-    input_state: false,
-    message_input_text: ""
-  };
   constructor(props) {
     super(props);
+    this.state = {
+      input_state: false,
+      message_input_text: ""
+    };
     this.messageHandler = this.messageHandler.bind(this);
     this.send = this.send.bind(this);
     this.delete = this.delete.bind(this);
